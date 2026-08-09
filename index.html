@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="ja">
+<html>
+<style>
+  header {
+    width: 100%;
+    height: 50px;
+    background-color: #f5f5f5;
+    /* 背景色 */
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+  }
+
+
+  header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  header .gnav .menu {
+    display: flex;
+  }
+
+  header .gnav .menu li {
+    list-style: none;
+  }
+
+  header .gnav .menu li+li {
+    margin-left: 40px;
+  }
+
+  main {
+    padding-top: 90px;
+    height: 100vw;
+  }
+
+  h2 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  table {
+    padding-top: 90px;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    border: 1px solid #000;
+    padding: 10px;
+    text-align: center;
+  }
+
+  button {
+    padding: 5px 10px;
+    font-size: 16px;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+  }
+
+  #timer {
+    margin-left: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .maintable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    /* 下のテーブルとの間隔 */
+  }
+
+
+  /* 横並びテーブルをコンテナに配置 */
+  .table-container {
+    display: flex;
+    flex-wrap: nowrap;
+    /* テーブルが横に並び、折り返さないようにします */
+    overflow-x: auto;
+    /* テーブルが横に並びすぎる場合はスクロールバーを表示します */
+    justify-content: center;
+  }
+
+  /* 横並びテーブルのスタイル */
+  .sub-table {
+    width: 25%;
+    /* 3つのテーブルが均等に並ぶように幅を設定 */
+    border-collapse: collapse;
+  }
+
+  .sub-table th,
+  .sub-table td {
+    border: 1px solid #ccc;
+    padding: 7px;
+    text-align: center;
+  }
+
+  .sub-table th {
+    background-color: #f4f4f4;
+  }
+
+  .popup {
+    display: none;
+    /* 初期状態で非表示 */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* 背景の半透明効果 */
+  }
+
+  .popup-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 100%;
+    text-align: center;
+    max-width: 800px;
+    border-radius: 10px;
+  }
+
+  .event-popup-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 100%;
+    text-align: center;
+    max-width: 800px;
+    border-radius: 10px;
+  }
+
+  .close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close-btn:hover,
+  .close-btn:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+header {
+  display: flex;
+  justify-content: space-between; /* タイトルとボタンを左右に分ける */
+  align-items: center; /* タイトルとボタンを縦に中央揃え */
+}
+
+header h1 {
+  margin: 0;  /* 余計な余白をなくす */
+  font-size: 24px;  /* タイトルのフォントサイズ */
+}
+
+header .button-group {
+  display: flex;
+  gap: 0; /* ボタン間の余白をなくす */
+}
+
+header button {
+  height: 100%; 
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 0;
+}
+
+  
+</style>
+
+<body>
+  <header>
+    <h1>アドコレ対戦詳細</h1>
+    <div class="button-group">
+      <button onclick="Eventcalendar_popup()">イベントカレンダー</button>
+      <button onclick="Eventsetting_popup()">イベントの作成・更新・削除</button>
+    </div>
+  </header>
+  <main>
+    <form action="#" method="post">
+      <!--- <h2>
+          <label for="dropdown">ネットワーク設定:</label>
+          <select id="dropdown" name="options">
+            <option value="option1">ALL</option>
+            <option value="option2">ワールドワイド</option>
+            <option value="option3">ヨーロッパ</option>
+            <option value="option4">日本</option>
+          </select>
+        </h2> --->
+
+      <h2>
+        <label for="gametypes">環境:</label>
+        <select id="gametypes" name="gametype"> <!--onchange="onSelectionChange()">-->
+          <option value="Switch">Switch</option>
+          <option value="Steam">Steam</option>
+          <option value="PS4/PS5">PS4/PS5</option>
+        </select>
+
+        <label for="versions">バージョン:</label>
+        <select id="versions" name="version"> <!--onchange="onSelectionChange()">-->
+          <option value="exe1">exe1</option>
+          <option value="exe2">exe2</option>
+          <option value="exe3">exe3</option>
+          <option value="exe4">exe4</option>
+          <option value="exe5">exe5</option>
+          <option value="exe6">exe6</option>
+        </select>
+        <button id="ChangeButton">変更</button>
+      </h2>
+
+      <table id="dynamicTable" class="maintable">
+        <thead>
+          <tr>
+            <th>ルール</th>
+            <th>親</th>
+            <th>子</th>
+
+            <th>クイック表明通知</th>
+            <th>参加表明通知</th>
+            <th>表明有無</th>
+
+            <th>詳細</th>
+            <th>イベント情報</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- JavaScriptで行を追加します -->
+        </tbody>
+      </table>
+
+      <body>
+        <div class="table-container">
+          <!-- サブテーブル1 -->
+          <table id="table1" class="sub-table">
+            <thead>
+              <tr>
+                <th colspan="6" class="switch-header">Switch</th>
+              </tr>
+              <tr>
+                <th>exe1</th>
+                <th>exe2</th>
+                <th>exe3</th>
+                <th>exe4</th>
+                <th>exe5</th>
+                <th>exe6</th>
+              </tr>
+            </thead>updateValues
+            <tbody class="sub-table">
+              <!-- JavaScript でデータを挿入 -->
+            </tbody>
+          </table>
+
+          <!-- サブテーブル2 -->
+          <table id="table2" class="sub-table">
+            <thead>
+              <tr>
+                <th colspan="6" class="PS4PS5-header">PS4/PS5</th>
+              </tr>
+              <tr>
+                <th>exe1</th>
+                <th>exe2</th>
+                <th>exe3</th>
+                <th>exe4</th>
+                <th>exe5</th>
+                <th>exe6</th>
+              </tr>
+            </thead>
+            <tbody class="sub-table">
+              <!-- JavaScript でデータを挿入 -->
+            </tbody>
+          </table>
+
+          <!-- サブテーブル3 -->
+          <table id="table3" class="sub-table">
+            <thead>
+              <tr>
+                <th colspan="6" class="Steam-header">Steam</th>
+              </tr>
+              <tr>
+                <th>exe1</th>
+                <th>exe2</th>
+                <th>exe3</th>
+                <th>exe4</th>
+                <th>exe5</th>
+                <th>exe6</th>
+              </tr>
+            </thead>
+            <tbody class="sub-table">
+              <!-- JavaScript でデータを挿入 -->
+            </tbody>
+          </table>
+        </div>
+
+
+
+        <div class="container">
+          <button type="button" id="button1">画面情報更新</button>
+          <button type="button" id="button2">待機解除</button>
+          <div id="timer">00:00:00</div>
+        </div>
+
+        <div id="detail_popup" class="popup">
+          <div class="popup-content">
+            <span id="close_detail_popupBtn" class="close-btn">&times;</span>
+            <h2>ルール詳細</h2>
+            <div id="detailTable"></div>
+          </div>
+        </div>
+
+        <div id="eventdetail_popup" class="popup">
+          <div class="event-popup-content">
+            <span id="close_eventdetail_popupBtn" class="close-btn">&times;</span>
+            <h2>イベント情報</h2>
+            <div id="events"></div>
+          </div>
+        </div>
+
+        <div id="eventcalendar_popup" class="popup">
+          <div class="event-popup-content">
+            <span id="close_eventcalendar_popupBtn" class="close-btn">&times;</span>
+            <h2>イベントカレンダー</h2>
+            <iframe src="https://calendar.google.com/calendar/embed?src=e6357e72e9e90efa4e4bb4284cf8f5c0904c27903d2d171ea61deb47df7b28b2%40group.calendar.google.com&ctz=Asia%2FTokyo" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+          </div>
+        </div>
+
+
+        <div id="eventsetting_popup" class="popup">
+          <div class="popup-content">
+            <span id="close_eventsetting_popupBtn" class="close-btn">&times;</span>
+            <div id="platform" class="tab-content">
+
+              <!-- タブヘッダー -->
+              <div class="tab-header">
+                <button class="tab-button" onclick="openTab(event, 'tab-insert')">イベント追加</button>
+                <button class="tab-button" onclick="openTab(event, 'tab-update')">イベント変更・削除</button>
+              </div>
+              <div id="tab-insert">
+                <h2>新しいイベントを追加</h2>
+                <p>タイトル: <input type="text" id="title"></p>
+                <!-- <p>共通の日付: <input type="date" id="commonDate"></p> 共通の日付 -->
+                <!-- <p>開始時間: <input type="time" id="startTime" value="00:00"></p> <!-- 開始時刻、初期値を00:00に設定 -->
+                <!-- <p>終了時間: <input type="time" id="endTime" value="00:00"></p> <!-- 終了時刻、初期値を00:00に設定 -->
+                <p>開始日時: <input type="datetime-local" id="startTime"></p>
+                <p>終了日時: <input type="datetime-local" id="endTime"></p>
+
+                <!-- プラットフォームのプルダウン -->
+                <p>プラットフォーム:
+                  <select id="insertplatform">
+                    <option value="Switch">Switch</option>
+                    <option value="PS4/PS5">PS4/PS5</option>
+                    <option value="Steam">Steam</option>
+                  </select>
+                </p>
+
+                <!-- バージョンのプルダウン -->
+                <p>バージョン:
+                  <select id="insertversion">
+                    <option value="exe1">exe1</option>
+                    <option value="exe2">exe2</option>
+                    <option value="exe3">exe3</option>
+                    <option value="exe4">exe4</option>
+                    <option value="exe5">exe5</option>
+                    <option value="exe6">exe6</option>
+                  </select>
+                </p>
+
+                <!-- ルールのプルダウン -->
+                <p>ルール:
+                  <select id="insertrule">
+                  </select>
+                </p>
+
+                <!-- 説明フィールド -->
+                <p>説明:</p>
+                <textarea id="description" rows="4" cols="50"></textarea></br>
+                <button id="eventsetting_button">イベントを追加</button>
+              </div>
+              <div id="tab-update">
+                <h2>登録済みイベント情報</h2>
+                <div id="update-myevents"></div>
+              </div>  
+            </div>
+          </div>
+        </div>
+
+    </form>
+  </main>
+</body>
+<script>
+  let timer = document.getElementById('timer');
+  let seconds = 0;
+  let interval;
+
+
+  // ボタン押下時の処理
+  const qnotifyfunctionEvent = (event,bMode,target, rowsData,i) => {
+    // true:イベントリスナー追加 false:イベントリスナー削除
+    if (bMode) {
+      target.addEventListener('click', qnotifyfunction(event, rowsData,i));
+    } else {
+      target.removeEventListener("click",qnotifyfunction(event, rowsData,i));
+    }
+  };
+
+  const notifyfunctionEvent = (event,bMode,target, rowsData,i,inputDateTime) => {
+    // true:イベントリスナー追加 false:イベントリスナー削除
+    if (bMode) {
+      target.addEventListener('click', notifyfunction(event, rowsData,i,inputDateTime));
+    } else {
+      target.removeEventListener("click", notifyfunction(event, rowsData,i,inputDateTime));
+    }
+  };
+
+
+    function qnotifyfunction(event,rowsData,i) {
+      event.preventDefault(); // 画面遷移を防止
+      event.stopPropagation(); // 他のイベントに伝播しない
+
+      const hidden = rowsData[i].hidden;
+
+      // 現在時刻の30分後を計算（JSTに調整済み）
+      const qnow = new Date();
+      qnow.setMinutes(qnow.getMinutes() + 30);
+      const qjstOffsetMs = 9 * 60 * 60 * 1000;
+      const qjstDate = new Date(qnow.getTime() + qjstOffsetMs);
+
+      const qdateTimeStr = qjstDate.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
+      // Google Apps Script 関数を呼び出す
+      
+      google.script.run
+        .withSuccessHandler(function(response) {
+          //alert("test")
+          /*
+          if (response == -1) {
+            alert("時間をの更新に失敗しました。3");
+          } else if (response == 0) {
+            alert("時間が短くなるため更新されませんでした。3");
+          } else if (response == 1 ) {
+            alert("時間を登録しました3");
+          } else if (response == 2) {
+            alert("時間を更新しました。3");
+          } else {
+            alert("予期しない応答: 3" + response);
+          }*/
+        })
+        .setParticipationClosed(hidden, qdateTimeStr);
+    }
+
+function notifyfunction(event,rowsData,i,inputDateTime) {
+  event.preventDefault(); // 画面遷移を防止
+  event.stopPropagation(); // 他のイベントに伝播しない
+
+  const dateTime = inputDateTime.value;
+  const hidden = rowsData[i].hidden;
+
+  // Google Apps Script 関数を呼び出す
+
+  google.script.run
+    .withSuccessHandler(function(response) {
+      /*
+      if (response == -1) {
+        alert("時間をの更新に失敗しました。4");
+      } else if (response == 0) {
+        alert("時間が短くなるため更新されませんでした。4");
+      } else if (response == 1 ) {
+        alert("時間を登録しました4");
+      } else if (response == 2) {
+        alert("時間を更新しました。4");
+      } else {
+        alert("予期しない応答: 4" + response);
+      }*/
+    })
+    .setParticipationClosed(hidden, dateTime);
+}
+
+
+  // タイマーをスタートする関数
+  function startTimer() {
+    interval = setInterval(function () {
+      seconds--;
+      timer.textContent = new Date(seconds * 1000).toISOString().substr(11, 8);
+
+      if (seconds <= 0) {
+        clearInterval(interval);
+        // ゼロ秒になった場合に「待機解除」と同じ処理を行う
+        let userId = getUserId();
+        if (userId) {
+          google.script.run.withSuccessHandler(function () {
+            fetchRowData();
+            updateValues(); // Google Scriptの処理が成功した後に呼ばれる
+          }).toggleButton(userId, "", "", "", "");
+        }
+      }
+    }, 1000);
+  }
+  // タイマーをリセットして0に設定する関数
+  function resetTimerToZero() {
+    clearInterval(interval);
+    seconds = 0;
+    timer.textContent = "00:00:00";
+  }
+  document.getElementById('ChangeButton').addEventListener('click', function (event) {
+    event.preventDefault();
+    updateValues();
+  });
+
+  document.getElementById('button1').addEventListener('click', function (event) {
+    event.preventDefault();
+    updateValues();
+  });
+
+  document.getElementById('button2').addEventListener('click', function (event) {
+    event.preventDefault();
+    let userId = localStorage.getItem('userId');
+    if (userId) {
+      google.script.run.withSuccessHandler(function () {
+        resetTimerToZero();
+        fetchRowData();
+        updateValues(); // Google Scriptの処理が成功した後に呼ばれる
+      }).toggleButton(userId, "", "", "", "");
+    }
+
+  });
+
+  function updateSubTableData(tableId, data) {
+    const tableBody = document.querySelector(`#${tableId} tbody`);
+
+    if (!tableBody) {
+      console.error(`Table with ID ${tableId} not found`);
+      return;
+    }
+
+    tableBody.innerHTML = ''; // テーブルの内容をクリア
+
+    if (Array.isArray(data)) {
+      // データの最大行数を決定
+      const maxRows = data[0].length;
+
+      for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
+        const tr = document.createElement('tr');
+
+        data.forEach((columnData) => {
+          const td = document.createElement('td');
+          td.textContent = columnData;
+          tr.appendChild(td);
+        });
+
+        tableBody.appendChild(tr);
+      }
+    } else {
+      console.error(`Data for table ${tableId} is not an array:`, data);
+    }
+  }
+
+  // 初回描画時にテーブルを作成
+  function initializeTable(rowsData) {
+    // プルダウンメニューの要素を取得
+    var versionselectElement = document.getElementById('versions');
+    var version = versionselectElement.value;
+
+    var gametypeselectElement = document.getElementById('gametypes');
+    var gametype = gametypeselectElement.value;
+
+    const tableBody = document.querySelector('#dynamicTable tbody');
+    tableBody.innerHTML = ''; // テーブルの内容をクリア
+
+    rowsData.forEach((rowData, rowIndex) => {
+      const tr = document.createElement('tr');
+
+      // ルールの設定
+      const tdText = document.createElement('td');
+      tdText.textContent = rowData.rule;
+      tr.appendChild(tdText);
+
+      // ボタン1の設定
+      const tdButton1 = document.createElement('td');
+      const button1 = document.createElement('button');
+      button1.textContent = rowData.button1;
+      button1.dataset.rowIndex = rowIndex;
+      button1.dataset.hiddenData = rowData.hidden;
+      button1.addEventListener('click', function (event) {
+        event.preventDefault();
+        handleButtonClick(event, gametype, version, rowIndex, 'button1');
+      });
+      const span1 = document.createElement('span');
+      span1.textContent = ` ${rowData.accessnum1}`;
+      tdButton1.appendChild(button1);
+      tdButton1.appendChild(span1);
+      tr.appendChild(tdButton1);
+
+      // ボタン2の設定
+      const tdButton2 = document.createElement('td');
+      const button2 = document.createElement('button');
+      button2.textContent = rowData.button2;
+      button2.dataset.rowIndex = rowIndex;
+      button2.dataset.hiddenData = rowData.hidden;
+      button2.addEventListener('click', function (event) {
+        event.preventDefault();
+        handleButtonClick(event, gametype, version, rowIndex, 'button2');
+      });
+      const span2 = document.createElement('span');
+      span2.textContent = ` ${rowData.accessnum2}`;
+      tdButton2.appendChild(button2);
+      tdButton2.appendChild(span2);
+      tr.appendChild(tdButton2);
+
+
+// 📌 クイック表明通知 列の追加
+const qtdNotification = document.createElement('td');
+
+
+const qnotifyButton = document.createElement('button');
+qnotifyButton.textContent = "クイック通知";
+//const qinputDateTime = document.createElement('input');
+/*qnotifyButton.onclick = null
+
+qnotifyButton.addEventListener('click', (event) => {
+  qnotifyfunction(event, rowsData,i);
+});*/
+
+//qnotifyfunctionEvent(true,qnotifyButton, rowsData,i)
+
+qnotifyButton.onClick=null
+/*
+qnotifyButton.onClick={(event) => {
+  qnotifyfunctionEvent(event,false,qnotifyButton, rowsData,i)
+  qnotifyfunctionEvent(event,true,qnotifyButton, rowsData,i)
+}}*/
+
+
+qnotifyButton.onclick = function(event) {
+  qnotifyfunctionEvent(event, false, qnotifyButton, rowsData, i);
+  qnotifyfunctionEvent(event, true, qnotifyButton, rowsData, i);
+};
+/*
+qnotifyButton.addEventListener('click', function (event) {
+  event.preventDefault(); // 遷移を防止
+
+  const hidden = rowsData[i].hidden;
+
+  // 現在時刻の30分後を計算（JSTに調整済み）
+  const qnow = new Date();
+  qnow.setMinutes(qnow.getMinutes() + 30);
+  const qjstOffsetMs = 9 * 60 * 60 * 1000;
+  const qjstDate = new Date(qnow.getTime() + qjstOffsetMs);
+
+  const qdateTimeStr = qjstDate.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
+  // Google Apps Script 関数を呼び出す
+
+  google.script.run
+    .withSuccessHandler(function(response) {
+      if (response == -1) {
+        alert("時間をの更新に失敗しました。１");
+      } else if (response == 0) {
+        alert("時間が短くなるため更新されませんでした。１");
+      } else if (response == 1 ) {
+        alert("時間を登録しました１");
+      } else if (response == 2) {
+        alert("時間を更新しました。１");
+      } else {
+        alert("予期しない応答: １" + response);
+      }
+    })
+    .setParticipationClosed(hidden, qdateTimeStr);
+
+});*/
+
+
+
+qtdNotification.appendChild(qnotifyButton);
+tr.appendChild(qtdNotification);
+
+
+
+// 📌 参加表明通知 列の追加
+const tdNotification = document.createElement('td');
+const inputDateTime = document.createElement('input');
+
+inputDateTime.type = 'datetime-local';
+inputDateTime.classList.add('notification-time');
+
+const now = new Date();
+now.setMinutes(now.getMinutes() + 30);
+
+// JST (UTC+9) に調整
+const jstOffsetMs = 9 * 60 * 60 * 1000;
+const jstDate = new Date(now.getTime() + jstOffsetMs);
+
+inputDateTime.value = jstDate.toISOString().slice(0, 16);
+
+const notifyButton = document.createElement('button');
+notifyButton.textContent = "通知送信";
+/*
+notifyButton.onclick = null
+
+notifyButton.addEventListener('click', (event) => {
+  notifyfunction(event, rowsData,i,inputDateTime);
+});*/
+
+
+//notifyfunctionEvent(true,notifyButton, rowsData,i,inputDateTime)
+
+notifyButton.onClick=null
+/*
+notifyButton.onClick={(event) => {
+  notifyfunctionEvent(event,false,notifyButton, rowsData,i,inputDateTime)
+  notifyfunctionEvent(event,true,notifyButton, rowsData,i,inputDateTime)
+}}
+*/
+notifyButton.onclick = function(event) {
+  notifyfunctionEvent(event, false, notifyButton, rowsData, i,inputDateTime)
+  notifyfunctionEvent(event, true, notifyButton, rowsData, i,inputDateTime)
+};
+
+/*
+notifyButton.addEventListener('click', function (event) {
+  event.preventDefault(); // 遷移を防止
+
+  const dateTime = inputDateTime.value;
+  const hidden = rowsData[i].hidden;
+
+  // Google Apps Script 関数を呼び出す
+
+  google.script.run
+    .withSuccessHandler(function(response) {
+      if (response == -1) {
+        alert("時間をの更新に失敗しました。２");
+      } else if (response == 0) {
+        alert("時間が短くなるため更新されませんでした。２");
+      } else if (response == 1 ) {
+        alert("時間を登録しました２");
+      } else if (response == 2) {
+        alert("時間を更新しました。２");
+      } else {
+        alert("予期しない応答: ２" + response);
+      }
+    })
+    .setParticipationClosed(hidden, dateTime);
+});
+*/
+tdNotification.appendChild(inputDateTime);
+tdNotification.appendChild(notifyButton);
+tr.appendChild(tdNotification);
+
+// 📌 表明有無 列の追加
+const tdDeclaration = document.createElement('td');
+tdDeclaration.textContent = "確認中...";
+//google.script.run.withSuccessHandler(function (isDeclared) {
+  tdDeclaration.textContent = rowData.exbutton2;//"表明なし";// isDeclared ? "表明あり" : "表明なし";
+//}).checkDeclarationStatus(rowsData[i].hidden);
+tr.appendChild(tdDeclaration);
+
+
+
+      // ボタン3の設定
+      const tdButton3 = document.createElement('td');
+      const button3 = document.createElement('button');
+      button3.textContent = "ルール詳細";
+      button3.dataset.rowIndex = rowIndex;
+      button3.dataset.hiddenData = rowData.hidden;
+      button3.addEventListener('click', function (event) {
+        event.preventDefault();
+        open_etccode_PopupBtnEvent(event, rowIndex);
+      });
+      tdButton3.appendChild(button3);
+      tr.appendChild(tdButton3);
+
+      // ボタン4の設定
+      const tdButton4 = document.createElement('td');
+      const button4 = document.createElement('button');
+
+      // ボタン設定部分（非同期で取得後に処理）
+      fetchEventnum(rowData.hidden).then(Eventnum => {
+        // イベントの有無によってボタンのテキストを設定
+        button4.textContent = Eventnum != 0 ? "イベントあり" : "イベントなし";
+        button4.dataset.rowIndex = rowIndex;
+        // hiddenData をボタンの data 属性に設定
+        button4.dataset.hiddenData = rowData.hidden;
+
+        // ボタンクリックイベントを設定
+        button4.addEventListener('click', function (event) {
+          event.preventDefault();
+
+          // クリック時に最新の hiddenData を取得して使用
+          const currentHiddenData = button4.dataset.hiddenData;
+          fetchEvents(currentHiddenData);  // 非同期処理で使用
+        });
+
+        // ボタンを行に追加
+        tdButton4.appendChild(button4);
+        tr.appendChild(tdButton4);
+      }).catch(error => {
+        console.error('Error fetching events:', error);
+      });
+
+      // その他の処理
+      google.script.run.withSuccessHandler(function (sampleData) {
+        updateSubTableData('table1', sampleData.table1);
+        updateSubTableData('table2', sampleData.table2);
+        updateSubTableData('table3', sampleData.table3);
+      }).getAllversionRowData();
+
+    })
+
+  }
+  function updateValues() {
+
+
+
+    var versionselectElement = document.getElementById('versions');
+    var version = versionselectElement.value;
+
+    var gametypeselectElement = document.getElementById('gametypes');
+    var gametype = gametypeselectElement.value;
+
+    google.script.run.withSuccessHandler(function (rowsData) {
+      if (rowsData) {
+        const tableBody = document.querySelector('#dynamicTable tbody');
+        if (!tableBody) {
+          console.error('Table body not found');
+          return;
+        }
+
+        const currentRows = tableBody.querySelectorAll('tr');
+        const currentRowCount = currentRows.length;
+        const newRowCount = rowsData.length;
+
+        // 行数が増えた場合
+        if (newRowCount > currentRowCount) {
+          for (let i = currentRowCount; i < newRowCount; i++) {
+            const tr = document.createElement('tr');
+
+            // 新しい行に必要なセルを追加
+            const tdText = document.createElement('td');
+            tdText.textContent = rowsData[i].rule;
+            tr.appendChild(tdText);
+
+            const tdButton1 = document.createElement('td');
+            const button1 = document.createElement('button');
+            button1.textContent = rowsData[i].button1;
+            button1.dataset.rowIndex = i;
+            button1.dataset.hiddenData = rowsData[i].hidden;
+            button1.addEventListener('click', function (event) {
+              event.preventDefault();
+              handleButtonClick(event, gametype, version, button1.dataset.rowIndex, 'button1');
+            });
+            const span1 = document.createElement('span');
+            span1.textContent = ` ${rowsData[i].accessnum1}`;
+            tdButton1.appendChild(button1);
+            tdButton1.appendChild(span1);
+            tr.appendChild(tdButton1);
+
+            const tdButton2 = document.createElement('td');
+            const button2 = document.createElement('button');
+            button2.textContent = rowsData[i].button2;
+            button2.dataset.rowIndex = i;
+            button2.dataset.hiddenData = rowsData[i].hidden;
+            button2.addEventListener('click', function (event) {
+              event.preventDefault();
+              handleButtonClick(event, gametype, version, button2.dataset.rowIndex, 'button2');
+            });
+            const span2 = document.createElement('span');
+            span2.textContent = ` ${rowsData[i].accessnum2}`;
+            tdButton2.appendChild(button2);
+            tdButton2.appendChild(span2);
+            tr.appendChild(tdButton2);
+
+
+// 📌 クイック表明通知 列の追加
+const qtdNotification = document.createElement('td');
+
+
+const qnotifyButton = document.createElement('button');
+qnotifyButton.textContent = "クイック通知";
+/*
+qnotifyButton.addEventListener('click', (event) => {
+  qnotifyfunction(event, rowsData,i);
+});
+*/
+qnotifyButton.onClick=null
+/*
+qnotifyButton.onClick={(event) => {
+  qnotifyfunctionEvent(event,false,qnotifyButton, rowsData,i)
+  qnotifyfunctionEvent(event,true,qnotifyButton, rowsData,i)
+}}
+*/
+qnotifyButton.onclick = function(event) {
+  qnotifyfunctionEvent(event, false, qnotifyButton, rowsData, i);
+  qnotifyfunctionEvent(event, true, qnotifyButton, rowsData, i);
+};
+
+qtdNotification.appendChild(qnotifyButton);
+tr.appendChild(qtdNotification);
+
+
+
+// 📌 参加表明通知 列の追加
+const tdNotification = document.createElement('td');
+const inputDateTime = document.createElement('input');
+
+inputDateTime.type = 'datetime-local';
+inputDateTime.classList.add('notification-time');
+
+const now = new Date();
+now.setMinutes(now.getMinutes() + 30);
+
+// JST (UTC+9) に調整
+const jstOffsetMs = 9 * 60 * 60 * 1000;
+const jstDate = new Date(now.getTime() + jstOffsetMs);
+
+inputDateTime.value = jstDate.toISOString().slice(0, 16);
+
+const notifyButton = document.createElement('button');
+notifyButton.textContent = "通知送信";
+
+notifyButton.onclick = null
+//notifyButton.addEventListener('click', notifyfunction);
+/*
+notifyButton.removeEventListener("click", notifyfunction);
+notifyButton.addEventListener('click', (event) => {
+  notifyfunction(event, rowsData,i,inputDateTime);
+});
+*/
+/*
+notifyfunctionEvent(false,notifyButton, rowsData,i,inputDateTime)
+notifyfunctionEvent(true,notifyButton, rowsData,i,inputDateTime)
+*/
+
+notifyButton.onClick=null
+/*
+notifyButton.onClick={(event) => {
+  notifyfunctionEvent(event,false,notifyButton, rowsData,i,inputDateTime)
+  notifyfunctionEvent(event,true,notifyButton, rowsData,i,inputDateTime)
+}}*/
+
+notifyButton.onclick = function(event) {
+  notifyfunctionEvent(event, false, notifyButton, rowsData, i,inputDateTime)
+  notifyfunctionEvent(event, true, notifyButton, rowsData, i,inputDateTime)
+};
+
+tdNotification.appendChild(inputDateTime);
+tdNotification.appendChild(notifyButton);
+tr.appendChild(tdNotification);
+
+// 📌 表明有無 列の追加
+const tdDeclaration = document.createElement('td');
+tdDeclaration.textContent = "確認中...";
+//google.script.run.withSuccessHandler(function (isDeclared) {
+  tdDeclaration.textContent = rowsData[i].exbutton2;//"表明なし";// isDeclared ? "表明あり" : "表明なし";
+//}).checkDeclarationStatus(rowsData[i].hidden);
+tr.appendChild(tdDeclaration);
+
+
+
+            const tdButton3 = document.createElement('td');
+            const button3 = document.createElement('button');
+            button3.textContent = rowsData[i].button3 || "ルール詳細";
+            button3.dataset.rowIndex = i;
+
+            // onclickイベントを一旦削除
+            button3.onclick = null;
+
+            button3.addEventListener('click', function (event) {
+              event.preventDefault();
+              open_etccode_PopupBtnEvent(event, button3.dataset.rowIndex);
+            });
+            tdButton3.appendChild(button3);
+            tr.appendChild(tdButton3);
+
+            // ボタン4の設定
+            const tdButton4 = document.createElement('td');
+            const button4 = document.createElement('button');
+
+            // 行番号だけをボタンにセット
+            button4.dataset.rowIndex = i;
+
+            // ボタン設定部分（非同期で取得後に処理）
+            fetchEventnum(rowsData[i].hidden).then(Eventnum => {
+              // イベントの有無によってボタンのテキストを設定
+              button4.textContent = Eventnum != 0 ? "イベントあり" : "イベントなし";
+
+              // hiddenData をボタンの data 属性に設定
+              button4.dataset.hiddenData = rowsData[i].hidden;
+
+              button4.removeEventListener('click', handleButtonClick);
+
+
+              // onclickイベントを一旦削除
+              button4.onclick = null;
+
+              // ボタンクリックイベントを設定
+              button4.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                // クリック時に最新の hiddenData を取得して使用
+                const currentHiddenData = button4.dataset.hiddenData;
+                fetchEvents(currentHiddenData);  // 非同期処理で使用
+              });
+
+              // ボタンを行に追加
+              tdButton4.appendChild(button4);
+              tr.appendChild(tdButton4);
+            }).catch(error => {
+              console.error('Error fetching events:', error);
+            });
+            tableBody.appendChild(tr);
+
+            // ボタンのテキストを更新するために非同期でfetchEventnumを呼び出す
+            google.script.run.withSuccessHandler(function (eventList) {
+              fetchEventnum(rowsData[i].hidden).then(Eventnum => {
+                button4.textContent = Eventnum != 0 ? "イベントあり" : "イベントなし";
+                button4.dataset.hiddenData = rowsData[i].hidden;
+              }).catch(error => {
+                console.error('Error fetching events:', error);
+              });
+            }).getCalendarEvents();
+          }
+        }
+
+        // 行数が減った場合
+        else if (newRowCount < currentRowCount) {
+          for (let i = currentRowCount - 1; i >= newRowCount; i--) {
+            tableBody.removeChild(currentRows[i]);
+          }
+        }
+
+        // 既存の行の値を更新する
+        for (let i = 0; i < newRowCount; i++) {
+          const row = tableBody.rows[i];
+          if (!row) {
+            console.error(`Row at index ${i} is undefined`);
+            continue;
+          }
+          const cells = row.querySelectorAll('td');
+
+          // 各セルの存在を確認してから更新
+          if (cells.length > 0) {
+            // ルールの更新
+            if (cells[0].textContent !== rowsData[i].rule) {
+              cells[0].textContent = rowsData[i].rule;
+            }
+
+            // accessnum1 と button1 の更新
+            if (cells[1]) {
+              const span1 = cells[1].querySelector('span');
+              if (span1 && span1.textContent !== ` ${rowsData[i].accessnum1}`) {
+                span1.textContent = ` ${rowsData[i].accessnum1}`;
+              }
+
+              const button1 = cells[1].querySelector('button');
+              if (button1 && button1.textContent !== rowsData[i].button1) {
+                button1.textContent = rowsData[i].button1;
+                button1.dataset.hiddenData = rowsData[i].hidden;
+              }
+            }
+
+            // accessnum2 と button2 の更新
+            if (cells[2]) {
+              const span2 = cells[2].querySelector('span');
+              if (span2 && span2.textContent !== ` ${rowsData[i].accessnum2}`) {
+                span2.textContent = ` ${rowsData[i].accessnum2}`;
+              }
+
+              const button2 = cells[2].querySelector('button');
+              if (button2 && button2.textContent !== rowsData[i].button2) {
+                button2.textContent = rowsData[i].button2;
+                button2.dataset.hiddenData = rowsData[i].hidden;
+              }
+            }
+
+            if (cells[3]) {
+              const span3 = cells[3].querySelector('button');
+              if (span3 &&(span3.dataset.hiddenData != rowsData[i].hidden)) {
+                span3.dataset.hiddenData = rowsData[i].hidden;
+
+                // onclickイベントを一旦削除
+                span3.onclick = null;
+                //span3.addEventListener('click', qnotifyfunction);
+                /*
+                span3.removeEventListener("click", qnotifyfunction);
+                span3.addEventListener('click', (event) => {
+                  qnotifyfunction(event, rowsData,i);
+                });*/
+/*
+                qnotifyfunctionEvent(false,span3, rowsData,i)
+                qnotifyfunctionEvent(true,span3, rowsData,i)
+                */
+                span3.onClick=null
+
+                span3.onclick = function(event) {
+                  qnotifyfunctionEvent(event, false, span3, rowsData, i)
+                  qnotifyfunctionEvent(event, true, span3, rowsData, i)
+                };
+
+              }
+            }
+            if (cells[4]) {
+              const span4 = cells[4].querySelector('button');
+              const inputDateTime = cells[4].querySelector('input[type="datetime-local"]');
+
+              if (span4 && inputDateTime && (span4.dataset.hiddenData != rowsData[i].hidden)) {
+                span4.dataset.hiddenData = rowsData[i].hidden;
+
+
+                //inputDateTime.type = 'datetime-local';
+                inputDateTime.classList.add('notification-time');
+
+                const now = new Date();
+                now.setMinutes(now.getMinutes() + 30);
+
+                // JST (UTC+9) に調整
+                const jstOffsetMs = 9 * 60 * 60 * 1000;
+                const jstDate = new Date(now.getTime() + jstOffsetMs);
+
+                inputDateTime.value = jstDate.toISOString().slice(0, 16);
+                /*
+                span4.addEventListener('click', (event) => {
+                  notifyfunction(event, rowsData,i,inputDateTime);
+                });*/
+/*
+                notifyfunctionEvent(false,span4, rowsData,i,inputDateTime)
+                notifyfunctionEvent(true,span4, rowsData,i,inputDateTime)
+*/
+                span4.onClick=null
+
+                span4.onclick = function(event) {
+                  notifyfunctionEvent(event, false, span4, rowsData, i,inputDateTime)
+                  notifyfunctionEvent(event, true, span4, rowsData, i,inputDateTime)
+                };
+
+              }
+
+}
+// cells[5] → 表明有無
+if (cells[5]) {
+  const tdDeclaration = cells[5];
+  tdDeclaration.textContent = "確認中...";
+  //google.script.run.withSuccessHandler(function (isDeclared) {
+    tdDeclaration.textContent =rowsData[i].exbutton2;//"表明なし";// isDeclared ? "表明あり" : "表明なし";
+ // }).checkDeclarationStatus(rowsData[i].hidden);
+}
+
+// cells[6] → ボタン3（ルール詳細）
+if (cells[6]) {
+  const button3 = cells[6].querySelector('button');
+  if (button3 && button3.textContent !== rowsData[i].button3) {
+    button3.textContent = rowsData[i].button3 || "ルール詳細";
+    button3.dataset.hiddenData = rowsData[i].hidden;
+  }
+}
+
+// cells[7] → ボタン4（イベント）
+if (cells[7]) {
+  const button4 = cells[7].querySelector('button');
+  if (button4) {
+    fetchEventnum(rowsData[i].hidden).then(Eventnum => {
+      button4.textContent = Eventnum != 0 ? "イベントあり" : "イベントなし";
+      button4.dataset.hiddenData = rowsData[i].hidden;
+    }).catch(error => {
+      console.error('Error fetching events:', error);
+    });
+  }
+}
+
+          }
+        }
+      }
+
+      google.script.run.withSuccessHandler(function (sampleData) {
+        updateSubTableData('table1', sampleData.table1);
+        updateSubTableData('table2', sampleData.table2);
+        updateSubTableData('table3', sampleData.table3);
+      }).getAllversionRowData();
+
+
+    }).getRowData(gametype, version);
+  }
+
+  function generateUniqueId() {
+    //UniqCheckが必要
+    return 'user-' + Math.random().toString(36).substr(2, 9);
+  }
+
+  // ユーザーIDを取得または生成する関数
+  function getUserId() {
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+      userId = generateUniqueId();
+      localStorage.setItem('userId', userId);
+    }
+    return userId;
+  }
+
+  // ユーザーIDを取得または生成する関数
+  /*function getEventId() {
+    return 'event-' + Math.random().toString(36).substr(2, 9);
+  }*/
+
+
+  // ボタンのクリックハンドラー
+  function handleButtonClick(event, gametype, version, rowIndex, buttonType) {
+    event.preventDefault();
+    const userId = getUserId();
+    const hiddenData = document.querySelector(`button[data-row-index="${rowIndex}"]`).dataset.hiddenData;
+
+    // プルダウンメニューの要素を取得
+    var versionselectElement = document.getElementById('versions');
+    // 選択されている値を取得
+    var version = versionselectElement.value;
+
+    // プルダウンメニューの要素を取得
+    var gametypeselectElement = document.getElementById('gametypes');
+    // 選択されている値を取得
+    var gametype = gametypeselectElement.value;
+
+    // タイマーを5分（300秒）に設定しスタート
+    seconds = 300;
+    if (interval) {
+      clearInterval(interval);
+    }
+    startTimer();
+
+    if (buttonType === 'button1') {
+      console.log(`親ボタンがクリックされました, 隠しデータ: ${hiddenData}`);
+      google.script.run.withSuccessHandler(function () {
+        fetchRowData();
+        updateValues(); // Google Scriptの処理が成功した後に呼ばれる
+      }).toggleButton(userId, gametype, version, hiddenData, buttonType);
+    } else if (buttonType === 'button2') {
+      console.log(`子ボタンがクリックされました, 隠しデータ: ${hiddenData}`);
+      google.script.run.withSuccessHandler(function () {
+        fetchRowData();
+        updateValues(); // Google Scriptの処理が成功した後に呼ばれる
+      }).toggleButton(userId, gametype, version, hiddenData, buttonType);
+    }
+    updateValues();
+  }
+
+  // データを取得する関数
+  function fetchRowData() {
+    // プルダウンメニューの要素を取得
+    var versionselectElement = document.getElementById('versions');
+    // 選択されている値を取得
+    var version = versionselectElement.value;
+
+    // プルダウンメニューの要素を取得
+    var gametypeselectElement = document.getElementById('gametypes');
+    // 選択されている値を取得
+    var gametype = gametypeselectElement.value;
+
+    google.script.run.withSuccessHandler(function (rowsData) {
+      if (rowsData && Array.isArray(rowsData)) {
+        initializeTable(rowsData);
+      } else {
+        console.error('rowsData is not an array or is undefined');
+      }
+    }).getRowData(gametype, version);
+  }
+
+  // ページ読み込み時にテーブルを初期化
+  document.addEventListener('DOMContentLoaded', function () {
+    const userId = getUserId();
+    console.log(`ユーザーID: ${userId}`);
+    fetchRowData();
+    document.getElementById("tab-update").style.display = "none";
+  });
+
+  // 一定時間ごとに値を更新
+  setInterval(updateValues, 10000);
+
+  // ポップアップの外側をクリックしたときにポップアップを非表示にする
+  window.addEventListener('click', function (event) {
+    if (event.target === detailPopup) {
+      detailPopup.style.display = 'none';
+    }
+  });
+  const detailPopup = document.getElementById('detail_popup');
+  const showPopupBtn = document.getElementById('showPopupBtn');
+  const closePopupBtn = document.getElementById('close_detail_popupBtn');
+  const detailTable = document.getElementById('detailTable');
+
+  // ポップアップを開く処理
+  function open_etccode_PopupBtnEvent(event, rowIndex) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // ボタンからhiddenDataを取得
+    const hiddenData = document.querySelector(`button[data-row-index="${rowIndex}"]`).dataset.hiddenData;
+
+    // Google Apps Scriptからデータを取得
+    google.script.run.withSuccessHandler(function (ruleDetails) {
+      // 取得したデータ（配列）をdetailTableに表示
+      const detailTable = document.getElementById('detailTable');
+      detailTable.innerHTML = '';  // 既存の内容をクリア
+
+
+
+      // 取得したデータを改行込みで表示
+      if (ruleDetails && ruleDetails[1]) {
+        if (ruleDetails[1].length > 0) {
+          ruleDetails[1].forEach(function (rule) {
+            const p = document.createElement('p');
+            p.innerHTML = rule + '<br>';
+            detailTable.appendChild(p);
+          });
+        }
+        else {
+
+          const p = document.createElement('p');
+          p.innerHTML = 'ルールが設定されていません。<br>制限なしにて募集してください。';
+          detailTable.appendChild(p);
+
+        }
+      }
+      else {
+
+        const p = document.createElement('p');
+        p.innerHTML = '制限がありません。';
+        detailTable.appendChild(p);
+
+      }
+
+
+      // ポップアップを表示
+      document.getElementById('detail_popup').style.display = 'block';
+    }).ruledatile(hiddenData);
+  }
+  function Eventsetting_popup() {
+    const platform = document.getElementById('insertplatform');
+    const version = document.getElementById('insertversion');
+
+
+      google.script.run.withSuccessHandler(function (rules) {
+        var ruleSelect = document.getElementById('insertrule');
+        ruleSelect.innerHTML = ''; // 既存のオプションをクリア
+        rules.forEach(function (rule) {
+          var option = document.createElement('option');
+          option.value = rule.hidden;
+          option.textContent = rule.rule;
+          ruleSelect.appendChild(option);
+        });
+      }).getRules(platform.value, version.value);
+
+    document.getElementById('eventsetting_popup').style.display = 'block';
+  }
+
+  function Eventcalendar_popup() {
+    document.getElementById('eventcalendar_popup').style.display = 'block';
+  }
+
+  document.getElementById("close_detail_popupBtn").addEventListener("click", function (event) {
+    event.preventDefault(); // デフォルトの動作を防ぐ
+    event.stopPropagation(); // クリックイベントの伝播を防ぐ
+    document.getElementById("detail_popup").style.display = "none";
+  });
+
+  document.getElementById("close_eventsetting_popupBtn").addEventListener("click", function (event) {
+    event.preventDefault(); // デフォルトの動作を防ぐ
+    event.stopPropagation(); // クリックイベントの伝播を防ぐ
+    document.getElementById("eventsetting_popup").style.display = "none";
+  });
+
+  document.getElementById("close_eventcalendar_popupBtn").addEventListener("click", function (event) {
+    event.preventDefault(); // デフォルトの動作を防ぐ
+    event.stopPropagation(); // クリックイベントの伝播を防ぐ
+    document.getElementById("eventcalendar_popup").style.display = "none";
+  });
+
+  
+  document.getElementById("close_eventdetail_popupBtn").addEventListener("click", function (event) {
+    event.preventDefault(); // デフォルトの動作を防ぐ
+    event.stopPropagation(); // クリックイベントの伝播を防ぐ
+    document.getElementById("eventdetail_popup").style.display = "none";
+    var eventsDiv = document.getElementById('events');
+    eventsDiv.innerHTML = 'イベントはありません。';
+  });
+  // ポップアップ外をクリックしたときにポップアップを閉じる
+  window.addEventListener("click", function (event) {
+    // 各ポップアップの全体を取得
+    const popup1 = document.getElementById("detail_popup");
+    const popup2 = document.getElementById("eventsetting_popup");
+    const popup3 = document.getElementById("eventdetail_popup");
+    const popup4 = document.getElementById("eventcalendar_popup");
+
+    // ポップアップが表示されていて、かつクリックがポップアップ外だった場合に閉じる
+    if (popup1 && popup1.style.display === "block" && event.target === popup1) {
+      popup1.style.display = "none";
+    }
+
+    if (popup2 && popup2.style.display === "block" && event.target === popup2) {
+      popup2.style.display = "none";
+    }
+
+    if (popup3 && popup3.style.display === "block" && event.target === popup3) {
+      popup3.style.display = "none";
+      var eventsDiv = document.getElementById('events');
+      eventsDiv.innerHTML = 'イベントはありません。';
+    }
+
+    if (popup4 && popup4.style.display === "block" && event.target === popup4) {
+      popup4.style.display = "none";
+    }
+  });
+
+  function fetchEventnum(hiddenData) {
+    return new Promise((resolve, reject) => {
+      var ruleFilter = hiddenData;
+
+      google.script.run.withSuccessHandler(function (eventList) {
+        var eventsDiv = document.getElementById('events');
+        //eventsDiv.innerHTML = '';
+
+        if (eventList.length === 0) {
+          // eventsDiv.innerHTML = 'イベントはありません。';
+
+          resolve(0); // イベントがない場合、0を返す
+          return;
+        }
+
+        // フィルタリング処理
+        var filteredEvents = eventList.filter(function (event) {
+          var matchesRule = ruleFilter === '' || event.location === ruleFilter;
+          return matchesRule;
+        });
+
+        if (filteredEvents.length === 0) {
+          //eventsDiv.innerHTML = '指定のルールのイベントはありません。';
+
+          resolve(0); // フィルタリング後にイベントがない場合
+          return;
+        }
+
+        resolve(filteredEvents.length); // イベント数を返す
+      }).getCalendarEvents();
+    });
+
+  }
+
+// fetchEvents 関数
+function fetchEvents(hiddenData) {
+  var ruleFilter = hiddenData;
+  var userid;
+  
+  google.script.run.withSuccessHandler(function (eventList) {
+    var eventsDiv = document.getElementById('events');
+    eventsDiv.innerHTML = ''; // イベント表示をクリア
+
+    if (eventList.length === 0) {
+      eventsDiv.innerHTML = 'イベントはありません。';
+      document.getElementById('eventdetail_popup').style.display = 'block';
+      return;
+    }
+
+    // フィルタリング処理
+    var filteredEvents = eventList.filter(function (event) {
+      var matchesRule = ruleFilter === '' || event.location === ruleFilter;
+      return matchesRule;
+    });
+
+    if (filteredEvents.length === 0) {
+      eventsDiv.innerHTML = '指定のルールのイベントはありません。';
+      document.getElementById('eventdetail_popup').style.display = 'block';
+      return;
+    }
+
+    filteredEvents.forEach(function (event, index) {
+      var startTime = new Date(event.startTime);
+      var endTime = new Date(event.endTime);
+
+      var startDateStr = startTime.toLocaleDateString();
+      var startTimeStr = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var endTimeStr = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      // イベントサマリー
+      var eventSummary = event.title + " " + startDateStr + " " + startTimeStr + " - " + endTimeStr;
+
+      // イベントコンテナを作成
+      var eventContainer = document.createElement('div');
+      eventContainer.style.border = "1px solid #ccc";
+      eventContainer.style.padding = "10px";
+      eventContainer.style.margin = "10px 0";
+
+      // イベント概要
+      var eventElement = document.createElement('div');
+      eventElement.innerHTML = '<strong>' + eventSummary + '</strong></br><span class="toggle-info">（クリックして詳細を表示）</span>';
+      eventElement.style.cursor = 'pointer';
+      eventElement.onclick = function () {
+        toggleDetails(index);
+      };
+
+      // 詳細情報
+      var detailsElement = document.createElement('div');
+      detailsElement.id = 'details-' + index;
+      detailsElement.style.display = 'none';
+      detailsElement.innerHTML = '<p><strong>説明:</strong> <br>' + event.description.replace(/\n/g, '<br>') + '</p>';
+
+      // ボタンコンテナ
+      var buttonContainer = document.createElement('div');
+      buttonContainer.style.marginTop = '10px';
+
+      // 参加予定ボタン
+      var participateButton = document.createElement('button');
+      participateButton.textContent = '参加予定';
+      participateButton.onclick = function (e) {
+        e.preventDefault(); // デフォルトの動作を防ぐ
+        e.stopPropagation(); // クリックイベントの伝播を防ぐ
+        userid = getUserId();
+        alert('イベント ' + event.title + ' への参加を予定しました');
+        // 参加予定の更新処理を追加
+        google.script.run.withSuccessHandler(function() {
+          //participantCountElement.textContent = parseInt(participantCountElement.textContent) + 1;
+        }).setparticipateEvent(event.eventid, userid);
+      };
+
+      // ボタンをコンテナに追加
+      buttonContainer.appendChild(participateButton);
+
+      // 参加予定人数を表示する要素
+      var participantCountElement = document.createElement('span');
+      participantCountElement.style.marginLeft = '10px';
+      google.script.run.withSuccessHandler(function(participanteventcount) {
+        participantCountElement.textContent = participanteventcount || 0; // 参加予定人数を取得して表示
+      }).getparticipateEvent(event.eventid);
+      
+      buttonContainer.appendChild(participantCountElement); // 参加予定人数表示を追加
+
+      // イベントコンテナに要素を追加
+      eventContainer.appendChild(eventElement);
+      eventContainer.appendChild(detailsElement);
+      eventContainer.appendChild(buttonContainer);
+
+      // イベント全体を表示するdivに追加
+      eventsDiv.appendChild(eventContainer);
+    });
+
+    // ポップアップを表示
+    document.getElementById('eventdetail_popup').style.display = 'block';
+  }).getCalendarEvents();
+}
+
+  // 詳細情報の表示/非表示を切り替える
+  function toggleDetails(index) {
+    var detailsElement = document.getElementById('details-' + index);
+    var eventElement = document.querySelector('#details-' + index).parentNode; // 親要素を取得
+    var toggleText = eventElement.querySelector('.toggle-info');
+
+    if (detailsElement && toggleText) { // detailsElementとtoggleTextがnullでないことを確認
+      if (detailsElement.style.display === 'none') {
+        detailsElement.style.display = 'block';
+        toggleText.textContent = '（詳細を非表示）'; // 詳細を非表示
+      } else {
+        detailsElement.style.display = 'none';
+        toggleText.textContent = '（クリックして詳細を表示）'; // 詳細を表示
+      }
+    } else {
+      console.error("detailsElement or toggleText not found for index:", index);
+    }
+  }
+
+  // イベントを追加
+  document.getElementById("eventsetting_button").addEventListener("click", function (event) {
+    event.preventDefault(); // デフォルトの動作を防ぐ
+    event.stopPropagation(); // クリックイベントの伝播を防ぐ
+    
+    var title = document.getElementById('title').value;
+    //var commonDate = document.getElementById('commonDate').value;
+    var startTime = document.getElementById('startTime').value;
+    var endTime = document.getElementById('endTime').value;
+    var platform = document.getElementById('insertplatform').value;
+    var version = document.getElementById('insertversion').value;
+    var rule = document.getElementById('insertrule').value;//  + "_" + getEventId();
+    var description = document.getElementById('description').value;
+
+    // 時間の分を00に設定
+    //var startDateTime = commonDate + 'T' + startTime + ':00';
+    //var endDateTime = commonDate + 'T' + endTime + ':00';
+    var startDateTime =  startTime;
+    var endDateTime = endTime;
+
+    var userid = getUserId();
+
+    var eventData = {
+      title: title,
+      startTime: startDateTime,
+      endTime: endDateTime,
+      platform: platform,    // プラットフォームを追加
+      version: version,      // バージョンを追加
+      rule: rule,            // ルールを追加
+      description: description
+    };
+
+    //google.script.run.withSuccessHandler().addCalendarEvent(eventData);
+
+        // SuccessとFailureの両方のハンドラーを設定
+    google.script.run
+      .withSuccessHandler(function(response) {
+          if (response.success) {
+              alert(response.message);  // 成功時のメッセージ
+          } else {
+              alert("エラー: " + response.message);  // エラー時のメッセージ
+          }
+      })
+      .withFailureHandler(function(error) {
+          alert("スクリプトエラーが発生しました: " + error.message);  // スクリプト実行エラー
+      })
+      .addCalendarEvent(eventData,userid);
+  });
+
+function geteventidFilter(callback) {
+    var userid = getUserId();
+    google.script.run.withSuccessHandler(function (myeventsid) {
+        if (typeof callback === 'function') {
+            callback(myeventsid);
+        }
+    }).getmyeventsid(userid);
+}
+function getmyeventdetail(tabName) {
+    google.script.run.withSuccessHandler(function (eventList) {
+        var eventsDiv;
+
+        if (tabName === 'tab-update') {
+            eventsDiv = document.getElementById('update-myevents');
+        } else {
+            return;
+        }
+
+        eventsDiv.innerHTML = '';
+
+        if (eventList.length === 0) {
+            eventsDiv.innerHTML = 'イベントはありません。';
+            return;
+        }
+
+        // eventidFilterの値を取得してからフィルタリング処理を行う
+        geteventidFilter(function(eventidFilter) {
+
+          //console.log(eventidFilter.length); // デバッグ用
+            if (!Array.isArray(eventidFilter)) {
+                eventsDiv.innerHTML = 'イベントを作成していません。';
+                return;
+            }
+
+            // eventidFilter から全ての eventid を抽出
+            var filteredEventIds = eventidFilter.map(function(filterItem) {
+                return filterItem.eventid;
+            });
+
+            // eventListからfilteredEventIdsのいずれかと一致するevent.eventidのものだけをフィルタリング
+            var filteredEvents = eventList.filter(function (event) {
+                return filteredEventIds.includes(event.eventid);
+            });
+
+
+            //console.log("えｗｓ"); // デバッグ用
+            if (filteredEvents.length === 0) {
+                eventsDiv.innerHTML = '自分の作成したイベントはイベントはありません。';
+                return;
+            }
+
+            filteredEvents.forEach(function (event, index) {
+              console.log(event.eventid);
+                var startTime = new Date(event.startTime);
+                var endTime = new Date(event.endTime);
+
+                var startDateStr = startTime.toLocaleDateString();
+                var startTimeStr = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                var endTimeStr = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                var eventSummary = event.title + " [" + event.platform + "]" + " [" + event.version + "]";
+
+                // ローカル日時のフォーマット (YYYY-MM-DDTHH:MM)
+                function formatDateTimeLocal(date) {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    return `${year}-${month}-${day}T${hours}:${minutes}`;
+                }
+
+                // 開始時間と終了時間の入力フィールドを作成
+                var dateTimeContainer = document.createElement('div');
+                dateTimeContainer.innerHTML = `
+                    <p>開始日時: <input type="datetime-local" id="startTime-${index}" value="${formatDateTimeLocal(startTime)}"></p>
+                    <p>終了日時: <input type="datetime-local" id="endTime-${index}" value="${formatDateTimeLocal(endTime)}"></p>
+                `;
+
+                // イベント番号を表示
+                var eventNumber = document.createElement('h3');
+                eventNumber.innerText = `イベント ${index + 1}`;
+
+                var eventElement = document.createElement('div');
+                eventElement.innerHTML = '<strong>' + eventSummary + '</strong> <span class="toggle-info">（クリックして詳細を表示）</span>';
+                eventElement.style.cursor = 'pointer';
+                eventElement.style.margin = '10px 0';
+
+                eventElement.onclick = function () {
+                    toggleDetails(index);
+                };
+
+                // 詳細部分を作成
+                var detailsElement = document.createElement('div');
+                detailsElement.id = 'details-' + index;
+                detailsElement.style.display = 'none';
+                detailsElement.innerHTML = '<p><strong>説明:</strong> <br>' + event.description.replace(/\n/g, '<br>') + '</p>';
+
+                // ボタンを追加
+                var buttonContainer = document.createElement('div');
+                buttonContainer.style.marginTop = '10px';
+
+                var updateButton = document.createElement('button');
+                updateButton.innerHTML = '更新';
+                updateButton.onclick = function (e) {
+                      e.preventDefault(); // デフォルトの動作を防ぐ
+    e.stopPropagation(); // クリックイベントの伝播を防ぐ
+    var title = event.title;
+    var startDateTime = document.getElementById(`startTime-${index}`).value;
+    var endDateTime = document.getElementById(`endTime-${index}`).value;
+    var platform = event.platform;
+    var version = event.version;
+    var rule = event.rule;
+    var description = event.description;
+
+    var newEventData = {
+      title: title,
+      startDateTime: startDateTime,
+      endDateTime: endDateTime,
+      platform: platform,    // プラットフォームを追加
+      version: version,      // バージョンを追加
+      rule: rule,            // ルールを追加
+      description: description
+    };
+                    handleUpdate(e,event.eventid,newEventData); // 更新ボタンの処理に日時を渡す
+                };
+                buttonContainer.appendChild(updateButton);
+
+                var deleteButton = document.createElement('button');
+                deleteButton.innerHTML = '削除';
+                deleteButton.onclick = function (e) {
+                      e.preventDefault(); // デフォルトの動作を防ぐ
+    e.stopPropagation(); // クリックイベントの伝播を防ぐ
+
+    
+    var title = event.title;
+    var startDateTime = document.getElementById(`startTime-${index}`).value;
+    var endDateTime = document.getElementById(`endTime-${index}`).value;
+    var platform = event.platform;
+    var version = event.version;
+    var rule = event.rule;
+    var description = event.description;
+
+    var newEventData = {
+      title: title,
+      startDateTime: startDateTime,
+      endDateTime: endDateTime,
+      platform: platform,    // プラットフォームを追加
+      version: version,      // バージョンを追加
+      rule: rule,            // ルールを追加
+      description: description
+    };
+
+                    handleDelete(e,event.eventid,newEventData);// 削除ボタンの処理
+                };
+                buttonContainer.appendChild(deleteButton);
+
+                // イベント要素に詳細、日時選択、ボタンを追加
+                eventElement.appendChild(detailsElement);
+                eventElement.appendChild(dateTimeContainer);
+                eventElement.appendChild(buttonContainer);
+
+                // イベントを区切るために区切り線を追加
+                var separator = document.createElement('hr');
+
+                // イベントの番号、内容、区切り線を追加
+                eventsDiv.appendChild(eventNumber);
+                eventsDiv.appendChild(eventElement);
+                eventsDiv.appendChild(separator);
+            });
+
+        });
+    }).getCalendarEvents();
+}
+// 更新処理
+function handleUpdate(event,eventid,newEventData){ 
+    event.preventDefault(); // デフォルトの動作を防ぐ
+    event.stopPropagation(); // クリックイベントの伝播を防ぐ
+ // google.script.run.withSuccessHandler().updateCalendarEvent(eventid, newEventData);
+    google.script.run
+      .withSuccessHandler(function(response) {
+          if (response.success) {
+              alert(response.message);  // 成功時のメッセージ
+              getmyeventdetail("tab-update");
+          } else {
+              alert("エラー: " + response.message);  // エラー時のメッセージ
+          }
+      })
+      .withFailureHandler(function(error) {
+          alert("スクリプトエラーが発生しました: " + error.message);  // スクリプト実行エラー
+      })
+      .updateCalendarEvent(eventid, newEventData);
+}
+
+function handleDelete(event,eventid,newEventData){
+      event.preventDefault(); // デフォルトの動作を防ぐ
+    event.stopPropagation(); // クリックイベントの伝播を防ぐ
+  //google.script.run.withSuccessHandler().deleteCalendarEvent(eventid);
+
+    google.script.run
+      .withSuccessHandler(function(response) {
+          if (response.success) {
+              alert(response.message);  // 成功時のメッセージ
+              getmyeventdetail("tab-update");
+          } else {
+              alert("エラー: " + response.message);  // エラー時のメッセージ
+          }
+      })
+      .withFailureHandler(function(error) {
+          alert("スクリプトエラーが発生しました: " + error.message);  // スクリプト実行エラー
+      })
+      .deleteCalendarEvent(eventid,newEventData);
+}
+
+function openTab(evt, tabName) {
+  event.preventDefault(); // デフォルトの動作を防ぐ
+  event.stopPropagation(); // クリックイベントの伝播を防ぐ
+
+    // すべてのタブコンテンツを非表示にする
+    var i, tabcontent, tablinks;
+    document.getElementById("tab-insert").style.display = "none";
+    document.getElementById("tab-update").style.display = "none";
+    //document.getElementById("tab-delete").style.display = "none";
+
+    // すべてのタブボタンから "active" クラスを削除する
+    tablinks = document.getElementsByClassName("tab-button");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    getmyeventdetail(tabName);
+    // 指定されたタブを表示し、現在のタブボタンに "active" クラスを追加する
+    document.getElementById(tabName).style.display = "block";
+ 
+    evt.currentTarget.className += " active";
+}
+
+    const insertplatform = document.getElementById('insertplatform');
+    const insertversion = document.getElementById('insertversion');
+
+    // プルダウンの変更時のイベントリスナーを追加
+    insertplatform.addEventListener('change', function() {
+      changeEventSettiongRule();
+    });
+
+    // プルダウンの変更時のイベントリスナーを追加
+    insertversion.addEventListener('change', function() {
+      changeEventSettiongRule();
+    });
+
+    function changeEventSettiongRule(){
+      google.script.run.withSuccessHandler(function (rules) {
+        var ruleSelect = document.getElementById('insertrule');
+        ruleSelect.innerHTML = ''; // 既存のオプションをクリア
+        rules.forEach(function (rule) {
+          var option = document.createElement('option');
+          option.value = rule.hidden;
+          option.textContent = rule.rule;
+          ruleSelect.appendChild(option);
+        });
+      }).getRules(insertplatform.value, insertversion.value);
+    }
+</script>
+
+</html>
