@@ -531,8 +531,10 @@ header button {
   // =====================================================================
   //  設定値
   // =====================================================================
-  const POLL_INTERVAL_MS = 10000;   // 自動更新の間隔
-  const POLL_MAX_DELAY_MS = 60000;  // 更新の失敗が続いたときの最大間隔
+  const POLL_INTERVAL_MS = 10000;       // 自動更新の間隔
+  const IDLE_POLL_INTERVAL_MS = 30000;  // しばらく操作がないときの自動更新の間隔
+  const IDLE_AFTER_MS = 5 * 60 * 1000;  // この時間操作がなければ「放置中」とみなす
+  const POLL_MAX_DELAY_MS = 60000;      // 更新の失敗が続いたときの最大間隔
   const SERVER_TIMEOUT_MS = 30000;  // サーバー応答を待つ上限
   const WAIT_SECONDS = 300;         // 待機の有効時間（サーバー側の自動解除と同じ5分）
   const VERSION_LIST = ['exe1', 'exe2', 'exe3', 'exe4', 'exe5', 'exe6'];
@@ -560,6 +562,7 @@ header button {
     timerInterval: null,
     storageWarned: false,
     memoryUserId: null,
+    lastActiveAt: Date.now(),
   };
 
 
@@ -720,7 +723,7 @@ header button {
       const data = await callServer('getPageData', view.gametype, view.version);
       if (seq !== state.pageSeq) return;  // 後から出した要求があるので、この応答は捨てる
       applyPageData(data);
-      state.pollDelay = POLL_INTERVAL_MS;
+      state.pollDelay = basePollInterval();
       setSyncStatus('ok');
     } catch (error) {
       if (seq !== state.pageSeq) return;
@@ -732,6 +735,24 @@ header button {
       if (seq === state.pageSeq) schedulePoll();
     }
   }
+
+  // 開いたまま放置されているタブは更新を遅くする（全員の通信が同時実行数の上限30を分け合うため）
+  // 待機中（タイマーが動いている間）は放置扱いにしない
+  function isIdle() {
+    return !state.timerInterval && Date.now() - state.lastActiveAt > IDLE_AFTER_MS;
+  }
+
+  function basePollInterval() {
+    return isIdle() ? IDLE_POLL_INTERVAL_MS : POLL_INTERVAL_MS;
+  }
+
+  ['click', 'keydown', 'scroll', 'touchstart'].forEach(type => {
+    document.addEventListener(type, () => {
+      const wasIdle = isIdle();
+      state.lastActiveAt = Date.now();
+      if (wasIdle) loadPage();  // 戻ってきたらすぐ最新にする
+    }, { passive: true, capture: true });
+  });
 
   // 前回の更新が終わってから次を予約する（通信が遅いときに要求が積み上がらない）
   function schedulePoll() {
@@ -748,7 +769,7 @@ header button {
     state.pageSeq++;  // 実行中の自動更新の結果で上書きしないようにする
     if (data && data.gametype === view.gametype && data.version === view.version) {
       applyPageData(data);
-      state.pollDelay = POLL_INTERVAL_MS;
+      state.pollDelay = basePollInterval();
       setSyncStatus('ok');
       schedulePoll();
     } else {
@@ -902,7 +923,8 @@ header button {
         });
         tr.appendChild(td);
       });
-      tbody.replaceChildren(tr);
+      tbody.textContent = '';  // replaceChildren は古い iPhone（iOS 13 以前）で動かないため使わない
+      tbody.appendChild(tr);
     });
     highlightCurrentVersion(view);
   }

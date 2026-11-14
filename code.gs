@@ -672,14 +672,16 @@ const CONFIG_CACHE_KEY = 'config:v3';
 const CONFIG_CACHE_SECONDS = 60;                      // 設定値のキャッシュ（1分。シートの変更は最大1分で反映）
 const SNAPSHOT_CACHE_KEY = 'snapshot:v1';
 const SNAPSHOT_CACHE_SECONDS = 5;                     // 待機人数のキャッシュ（5秒。書き込み時は即破棄）
-const CALENDAR_CACHE_KEY = 'calendarEvents:v1';
+const CALENDAR_CACHE_KEY = 'calendarEvents:v2';
 const CALENDAR_CACHE_SECONDS = 60;                    // カレンダー予定のキャッシュ（60秒。追加・変更・削除時は即破棄）
 const CALENDAR_RANGE_DAYS = 90;                       // 取得するカレンダー予定の範囲（今日から3か月）
 const ADD_EVENT_DEDUP_SECONDS = 600;                  // イベント追加の二重登録防止（10分）
 const EXPIRED_NOTIFY_WITHIN_MS = 3 * 60 * 60 * 1000;  // これより前に期限切れになった参加表明は通知せずに消す
 
 // 一時的なエラー（再試行すれば成功する可能性が高いもの）の判定用
-const TRANSIENT_ERROR_RE = /too many times|rate limit|timed out|timeout|temporar|try again|internal error|backend error|service unavailable|unavailable|多すぎ|タイムアウト|一時的|しばらくして|内部エラー|サーバー ?エラー/i;
+// （同時実行数の上限「Too many simultaneous invocations」なども含む。1日の上限は再試行しても直らないので除外）
+const TRANSIENT_ERROR_RE = /too many|simultaneous|rate limit|timed out|timeout|temporar|try again|internal error|backend error|service unavailable|unavailable|failed while accessing|多すぎ|同時|タイムアウト|一時的|しばらくして|内部エラー|サーバー ?エラー/i;
+const DAILY_QUOTA_RE = /for one day|1 ?日/i;
 
 
 // =====================================================================
@@ -789,7 +791,9 @@ function userError_(message) {
 }
 
 function isTransientError_(e) {
-  return !!e && !e.userMessage && TRANSIENT_ERROR_RE.test(String((e && e.message) || e));
+  if (!e || e.userMessage) return false;
+  const message = String(e.message || e);
+  return TRANSIENT_ERROR_RE.test(message) && !DAILY_QUOTA_RE.test(message);
 }
 
 function friendlyMessage_(e, label) {
@@ -867,6 +871,46 @@ function safeCachePut_(key, value, seconds) {
   } catch (e) {
     // 100KB を超える値などはキャッシュしない（動作には影響なし）
     console.warn('キャッシュ書き込みエラー(' + key + '): ' + e);
+  }
+}
+
+// キャッシュは1件100KBまでなので、大きいデータ（3か月分のイベントなど）は分割して保存する
+// 目次（key）に分割数、key:0, key:1 … に本体を入れる。目次を消せば全体が無効になる
+const CACHE_CHUNK_CHARS = 25000;  // 日本語（1文字3バイト）でも100KBに収まる長さ
+
+function putLargeCache_(key, text, seconds) {
+  const items = {};
+  let count = 0;
+  for (let i = 0; i < text.length; i += CACHE_CHUNK_CHARS) {
+    items[key + ':' + count] = text.slice(i, i + CACHE_CHUNK_CHARS);
+    count++;
+  }
+  items[key] = String(count);
+  try {
+    CacheService.getScriptCache().putAll(items, seconds);
+  } catch (e) {
+    console.warn('キャッシュ書き込みエラー(' + key + '): ' + e);
+  }
+}
+
+function getLargeCache_(key) {
+  try {
+    const cache = CacheService.getScriptCache();
+    const count = Number(cache.get(key));
+    if (!count) return null;
+    const keys = [];
+    for (let i = 0; i < count; i++) keys.push(key + ':' + i);
+    const parts = cache.getAll(keys);
+    let text = '';
+    for (let i = 0; i < count; i++) {
+      const part = parts[key + ':' + i];
+      if (part === undefined || part === null) return null;  // 一部が消えていたら読み直す
+      text += part;
+    }
+    return text;
+  } catch (e) {
+    console.warn('キャッシュ読み込みエラー(' + key + '): ' + e);
+    return null;
   }
 }
 
@@ -1392,6 +1436,35 @@ function endbattle(userId) {
 
 
 // =====================================================================
+//  定期実行（トリガー用・推奨）
+//
+//  Gmail アカウントでは、トリガーの実行時間は1日合計90分までです。
+//  1分ごとのトリガーを3つ（userreset / deleteOldTime / sendNotificationToDiscord2）別々に動かすと、
+//  起動やスプレッドシートを開く時間がそれぞれにかかり、90分を超えてトリガーが止まります。
+//  この minuteJobs を「1分おき」のトリガー1つにまとめて使ってください（他の時間主導型トリガーは削除）。
+// =====================================================================
+function minuteJobs() {
+  runJob_('userreset', userreset);
+  runJob_('deleteOldTime', deleteOldTime);
+  runJob_('sendNotificationToDiscord2', sendNotificationToDiscord2);
+  // イベントのリマインドは10分ごとで十分（どれだけ前に通知するかは変わりません）
+  if (new Date().getMinutes() % 10 === 0) {
+    runJob_('24時間前リマインド', sendNotificationToDiscord_CalendarEventsWithin24Hours);
+    runJob_('1時間前リマインド', sendNotificationToDiscord_CalendarEventsWithin1Hours);
+  }
+}
+
+// 1つの処理が失敗しても、残りの処理は続ける
+function runJob_(label, fn) {
+  try {
+    fn();
+  } catch (e) {
+    console.error('[定期実行: ' + label + '] ' + ((e && e.stack) || e));
+  }
+}
+
+
+// =====================================================================
 //  待機人数の Discord 通知（トリガー用）
 // =====================================================================
 function sendNotificationToDiscord2() {
@@ -1486,7 +1559,7 @@ function calendarCacheKey_() {
 
 function getCalendarEventsCached_() {
   const cacheKey = calendarCacheKey_();
-  const cached = safeCacheGet_(cacheKey);
+  const cached = getLargeCache_(cacheKey);
   if (cached) {
     try {
       return JSON.parse(cached);
@@ -1495,7 +1568,7 @@ function getCalendarEventsCached_() {
     }
   }
   const events = fetchCalendarEvents_();
-  safeCachePut_(cacheKey, JSON.stringify(events), CALENDAR_CACHE_SECONDS);
+  putLargeCache_(cacheKey, JSON.stringify(events), CALENDAR_CACHE_SECONDS);
   return events;
 }
 
@@ -1859,15 +1932,16 @@ function setParticipationClosed(hidden, dateTime) {
       for (let i = 0; i < data.length; i++) {
         if (data[i][0] !== hidden) continue;
         const existing = parseDate_(data[i][1]);
+        // 文字列ではなく日時の値で書く（スプレッドシートとスクリプトのタイムゾーンが違っても時刻がずれない）
         if (!existing) {
-          sheet.getRange(i + 1, 2).setValue(dateTime);
+          sheet.getRange(i + 1, 2).setValue(newTime);
           return 1;
         }
         existing.setSeconds(0, 0);
         const compareTime = new Date(newTime.getTime());
         compareTime.setSeconds(0, 0);
         if (compareTime > existing) {
-          sheet.getRange(i + 1, 2).setValue(dateTime);
+          sheet.getRange(i + 1, 2).setValue(newTime);
           return 2;
         }
         return 0;
