@@ -1,60 +1,36 @@
 /*
-  webhookUrl = [
-    ["Switch", "exe1", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Switch", "exe2", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Switch", "exe3", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Switch", "exe4", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Switch", "exe5", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Switch", "exe6", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
+  =====================================================================
+  アドコレ対戦マッチング - サーバー側スクリプト（Google Apps Script）
 
-    ["PS4/PS5", "exe1", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["PS4/PS5", "exe2", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["PS4/PS5", "exe3", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["PS4/PS5", "exe4", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["PS4/PS5", "exe5", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["PS4/PS5", "exe6", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
+  ■ 設定値（Discord Webhook URL・カレンダーID など）について
+    秘密情報をコードに書かないよう、スプレッドシートの「設定」シートから読み込みます。
+    設定の変更はスプレッドシートを直接編集するだけです（スクリプトの実行は不要）。
 
-    ["Steam", "exe1", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Steam", "exe2", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Steam", "exe3", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Steam", "exe4", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Steam", "exe5", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-    ["Steam", "exe6", "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"],
-  ]
+    シートの構成（設定セットごとに1シート。使うシートの名前を「設定」シートに書きます）:
 
-var calendarId = 'c7dcd1f8eeee8060af0d87e9d549eba357a9f23df905a20709d89c9eec792c0c@group.calendar.google.com';
+      「設定」シート
+            A列            B列
+        1   使用する設定    設定_本番        ← ここを「設定_テスト」にするとテスト用に切り替わる
 
-const sheetId = '1xcZ2cEXwk4l236w2RwnLmPsA1yCF8BZ9X944JLjejLE';  // スプレッドシートのID
-const eventwebhookUrl = "https://discord.com/api/webhooks/1281823947243130910/HggMiIxfDOHhQtpcqqhDq0Ge_bXKufuLp7f9swK_RbHYBbZEFiKgqDluUo1jK0A4LkD0"
+      「設定_本番」シート（「設定_テスト」も同じ形）
+            A列                      B列        C列
+        1   項目                     値         説明
+        2   dataSheetId              （空欄）   待機データなどを置くスプレッドシート。空欄ならこのスプレッドシート
+        3   calendarId               …
+        4   eventWebhookUrl          …
+        5〜 webhook_環境_バージョン   …
+
+    ・切り替えは最大1分で反映されます。
+    ・設定セットを増やすときは、シートを「コピーを作成」して名前を変え、その名前を「設定」の B1 に書きます。
+
+    注意:
+      「設定」シートはスプレッドシートを共有している人なら誰でも見られます。
+      スプレッドシートの共有は「制限付き」（運営メンバーのみ）にしてください。
+  =====================================================================
 */
 
-  webhookUrl = [
-    ["Switch", "exe1", "https://discord.com/api/webhooks/1279703747769139212/kAnBeFO_pmtJRQzIPzsdbDvVceLdNv8nA4Mq8HPfZi0MBSWhRwMkpkHRWRqVAeLYWrDB"],
-    ["Switch", "exe2", "https://discord.com/api/webhooks/1279709179443023914/Gb8rMAIhpSZPp1Xe0SL2T9ox6-PIPC5FTsSkICP5h9cfCw8-c_7Jce1T9qqf51X5C1Bi"],
-    ["Switch", "exe3", "https://discord.com/api/webhooks/1279709517130633217/Hv-EITfLcDYZAED_UYvm96jZLq_oIN_jk0P71jeXm9rKHDlLuigFSUkJJz8rfQTrsA7E"],
-    ["Switch", "exe4", "https://discord.com/api/webhooks/1279709604506370059/UHq77BOiAXlKfRCTMF5ZwR7ko6zeeHTG5DCaNIi653evtY3AQc3vAIOJ-0HO5LgGSoAd"],
-    ["Switch", "exe5", "https://discord.com/api/webhooks/1279709639113576521/q4rZo6pY0z428nJWa9_hmF_129ZdCIOQjuH51nvvJBQbWLCauBbY3r1U5uVsH2H7pKvw"],
-    ["Switch", "exe6", "https://discord.com/api/webhooks/1279709695875088414/26g4gFNhSKVz-Z3o57CkJvO5ZBdZOJtvRULvQnNNQuEeKEaQTo5qPtv_7uFFCHSx7bm1"],
-
-    ["PS4/PS5", "exe1", "https://discord.com/api/webhooks/1279709756969320480/JNw6fKj5kRUqHcKAZadGM_wx-r0zrJ8dPTfxq_j3_epEwFwggRqp-6lZsGFqLoHi1H1v"],
-    ["PS4/PS5", "exe2", "https://discord.com/api/webhooks/1279709751298625633/EaexeK_X0BmWsxJ8acbCnw3lEWN4dkZlDOxRwcZW13uBglRlSI07U3Yuotl0BefScSeS"],
-    ["PS4/PS5", "exe3", "https://discord.com/api/webhooks/1279709749230833714/jBGv2OMGDBX7DDrczX7He6F3uOZE9E2ocAVcBH3aXcpJ8E6WIRiKsM8rqoUdBTgz6pfs"],
-    ["PS4/PS5", "exe4", "https://discord.com/api/webhooks/1279709750380199957/hecnyzvzxDgVGmDby3Knq6VEcS7oP3aQSQFy5Hr6O5_E2anvf29xI5HQo0WbCbAO9G7w"],
-    ["PS4/PS5", "exe5", "https://discord.com/api/webhooks/1279709753165217824/2Y2M0RKvgaLjtOo_IU-tKF0O-eWWessVpAMwr5m-owHulPvuGSuV4IV-k0WufQTU2FNP"],
-    ["PS4/PS5", "exe6", "https://discord.com/api/webhooks/1279709754440286310/Kj9q5s4LnHf-lwD6NZqEg1SXDqptiSDl1mNM8TASvDR7tr30NFESG-JYviqU9vCr0Dob"],
-
-    ["Steam", "exe1", "https://discord.com/api/webhooks/1279709746554994721/dyGbvXr3O8KyZ9EViDn5e7cs7f_m5UTZW8T-zU1iFshQHCBUoU6kT11GDeRC64tfpWMw"],
-    ["Steam", "exe2", "https://discord.com/api/webhooks/1279709747934662729/lM5T_4cyDanAIr5aQ99UCKQZXKkf8nX3laoCvYbRJvRtRJp1N7BudXdkKOvHumxHLph-"],
-    ["Steam", "exe3", "https://discord.com/api/webhooks/1279709760626888746/fLyKKmX3NJyG0e-dUUgEqWtvvpSwOSqHjhi69sZx6V7z6M_S1z2X2Ho3JcvpaAy2Djsf"],
-    ["Steam", "exe4", "https://discord.com/api/webhooks/1279709760991789147/HnP04mOkGOKSrdptl0lfVi9d_wWkqT6BHuQvHAKn0Vu4QqouNkHPR3CYPAIYKMaoGERA"],
-    ["Steam", "exe5", "https://discord.com/api/webhooks/1279709758370087013/_a8tljMNreSwaDCxbnO1tYkNzYIFVOmCSs-hylLY8u0KAbDAL_1oQzDN6HTG5rhJo-V3"],
-    ["Steam", "exe6", "https://discord.com/api/webhooks/1279709755870548059/rXLhqk6BKKMreeQsPgYySp1FX2xt2PsLWhodQwN5Ror9cLKunqgaEWoCjvp7ihL8vMJv"],
-  ]
-
-
-var calendarId = 'e6357e72e9e90efa4e4bb4284cf8f5c0904c27903d2d171ea61deb47df7b28b2@group.calendar.google.com';
-const sheetId = '1D7luwGuHJBZkg1Qm0yTHh3eogzhIocfhIcI_GKh0xT0';  // スプレッドシートのID
-const eventwebhookUrl = "https://discord.com/api/webhooks/1286733668525539473/DwJlsNL-izsnwqsqr9DN-z-14sTFOufc0elxIyTh_oDkRygev9xvTIFX9mDpjJKUtyxd"
+// 「設定」シートがあるスプレッドシートのID
+const SETTINGS_SPREADSHEET_ID = '1D7luwGuHJBZkg1Qm0yTHh3eogzhIocfhIcI_GKh0xT0';
 
 var rulearray = [
       //ゲームタイプ,バージョン,ルール名,隠しフラグ名,ネットワーク設定[1-5],カジュアル/ランク[],練習[]\本番, シングル[]/トリプル, 改造あり[]/改造なし,省略名称
@@ -99,7 +75,7 @@ var rulearray = [
 ["PS4/PS5","exe2",'ランク(A↓) [ワールドワイド]','PS4/PS5_exe2_hidden6',"1","True","True","True","False",'ランク(A↓)'],
 ["PS4/PS5","exe2",'カジュアル(制限なし) [ワールドワイド]','PS4/PS5_exe2_hidden2',"1","False","True","True","False",'カジュアル(制限なし)'],
 ["PS4/PS5","exe2",'カジュアル(制限あり) [アジア/オセアニア]','PS4/PS5_exe2_hidden3',"5","False","True","True","False",'カジュアル(制限あり)'],
-["PS4/PS5","exe2",'本番カジュアル(制限なし) [ワールドワイド]','PS4/PS5_exe2_hidden7',"1","False","False","True","False",'カジュアル本番(制限なし)'],
+["PS4/PS5","exe2",'カジュアル本番(制限なし) [ワールドワイド]','PS4/PS5_exe2_hidden7',"1","False","False","True","False",'カジュアル本番(制限なし)'],
 ["PS4/PS5","exe2",'特殊ルール [ヨーロッパ]','PS4/PS5_exe2_hidden4',"4",,,,,'特殊ルール'],
 ["PS4/PS5","exe2",'その他 [その他]','PS4/PS5_exe2_hidden5',"6",,,,,'その他'],
 
@@ -133,7 +109,7 @@ var rulearray = [
 ["Switch","exe4",'ランク(A↓) 改造あり [ワールドワイド]','Switch_exe4_hidden10',"1","True","True","True","True",'ランク(A↓)改造あり'],
 ["Switch","exe4",'カジュアル(制限なし) 改造なし [ワールドワイド]','Switch_exe4_hidden3',"1","False","True","True","False",'カジュアル(制限なし)改造なし'],
 ["Switch","exe4",'カジュアル(制限なし) 改造あり [ワールドワイド]','Switch_exe4_hidden4',"1","False","True","True","True",'カジュアル(制限なし)改造あり'],
-["Switch","exe4",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Switch_exe4_hidden5',"5","False","True","True","False",'カジュアル(制限なし)改造なし'],
+["Switch","exe4",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Switch_exe4_hidden5',"5","False","True","True","False",'カジュアル(制限あり)改造なし'],
 ["Switch","exe4",'カジュアル(制限あり) 改造あり [アジア/オセアニア]','Switch_exe4_hidden6',"5","False","True","True","True",'カジュアル(制限あり)改造あり'],
 ["Switch","exe4",'特殊ルール [ヨーロッパ]','Switch_exe4_hidden7',"4",,,,,'特殊ルール'],
 ["Switch","exe4",'その他 [その他]','Switch_exe4_hidden8',"6",,,,,'その他'],
@@ -144,7 +120,7 @@ var rulearray = [
 ["Steam","exe4",'ランク(A↓) 改造あり [ワールドワイド]','Steam_exe4_hidden10',"1","True","True","True","True",'ランク(A↓)改造あり'],
 ["Steam","exe4",'カジュアル(制限なし) 改造なし [ワールドワイド]','Steam_exe4_hidden3',"1","False","True","True","False",'カジュアル(制限なし)改造なし'],
 ["Steam","exe4",'カジュアル(制限なし) 改造あり [ワールドワイド]','Steam_exe4_hidden4',"1","False","True","True","True",'カジュアル(制限なし)改造あり'],
-["Steam","exe4",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Steam_exe4_hidden5',"5","False","True","True","False",'カジュアル(制限なし)改造なし'],
+["Steam","exe4",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Steam_exe4_hidden5',"5","False","True","True","False",'カジュアル(制限あり)改造なし'],
 ["Steam","exe4",'カジュアル(制限あり) 改造あり [アジア/オセアニア]','Steam_exe4_hidden6',"5","False","True","True","True",'カジュアル(制限あり)改造あり'],
 ["Steam","exe4",'特殊ルール [ヨーロッパ]','Steam_exe4_hidden7',"4",,,,,'特殊ルール'],
 ["Steam","exe4",'その他 [その他]','Steam_exe4_hidden8',"6",,,,,'その他'],
@@ -155,7 +131,7 @@ var rulearray = [
 ["PS4/PS5","exe4",'ランク(A↓) 改造あり [ワールドワイド]','PS4/PS5_exe4_hidden10',"1","True","True","True","True",'ランク(A↓)改造あり'],
 ["PS4/PS5","exe4",'カジュアル(制限なし) 改造なし [ワールドワイド]','PS4/PS5_exe4_hidden3',"1","False","True","True","False",'カジュアル(制限なし)改造なし'],
 ["PS4/PS5","exe4",'カジュアル(制限なし) 改造あり [ワールドワイド]','PS4/PS5_exe4_hidden4',"1","False","True","True","True",'カジュアル(制限なし)改造あり'],
-["PS4/PS5","exe4",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','PS4/PS5_exe4_hidden5',"5","False","True","True","False",'カジュアル(制限なし)改造なし'],
+["PS4/PS5","exe4",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','PS4/PS5_exe4_hidden5',"5","False","True","True","False",'カジュアル(制限あり)改造なし'],
 ["PS4/PS5","exe4",'カジュアル(制限あり) 改造あり [アジア/オセアニア]','PS4/PS5_exe4_hidden6',"5","False","True","True","True",'カジュアル(制限あり)改造あり'],
 ["PS4/PS5","exe4",'特殊ルール [ヨーロッパ]','PS4/PS5_exe4_hidden7',"4",,,,,'特殊ルール'],
 ["PS4/PS5","exe4",'その他 [その他]','PS4/PS5_exe4_hidden8',"6",,,,,'その他'],
@@ -166,7 +142,7 @@ var rulearray = [
 ["Switch","exe5",'ランク(A↓) 改造あり [ワールドワイド]','Switch_exe5_hidden10',"1","True","True","True","True",'ランク(A↓)改造あり'],
 ["Switch","exe5",'カジュアル(制限なし) 改造なし [ワールドワイド]','Switch_exe5_hidden3',"1","False","True","True","False",'カジュアル(制限なし)改造なし'],
 ["Switch","exe5",'カジュアル(制限なし) 改造あり [ワールドワイド]','Switch_exe5_hidden4',"1","False","True","True","True",'カジュアル(制限なし)改造あり'],
-["Switch","exe5",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Switch_exe5_hidden5',"5","False","True","True","False",'カジュアル(制限なし)改造なし'],
+["Switch","exe5",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Switch_exe5_hidden5',"5","False","True","True","False",'カジュアル(制限あり)改造なし'],
 ["Switch","exe5",'カジュアル(制限あり) 改造あり [アジア/オセアニア]','Switch_exe5_hidden6',"5","False","True","True","True",'カジュアル(制限あり)改造あり'],
 ["Switch","exe5",'特殊ルール [ヨーロッパ]','Switch_exe5_hidden7',"4",,,,,'特殊ルール'],
 ["Switch","exe5",'その他 [その他]','Switch_exe5_hidden8',"6",,,,,'その他'],
@@ -177,7 +153,7 @@ var rulearray = [
 ["Steam","exe5",'ランク(A↓) 改造あり [ワールドワイド]','Steam_exe5_hidden10',"1","True","True","True","True",'ランク(A↓)改造あり'],
 ["Steam","exe5",'カジュアル(制限なし) 改造なし [ワールドワイド]','Steam_exe5_hidden3',"1","False","True","True","False",'カジュアル(制限なし)改造なし'],
 ["Steam","exe5",'カジュアル(制限なし) 改造あり [ワールドワイド]','Steam_exe5_hidden4',"1","False","True","True","True",'カジュアル(制限なし)改造あり'],
-["Steam","exe5",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Steam_exe5_hidden5',"5","False","True","True","False",'カジュアル(制限なし)改造なし'],
+["Steam","exe5",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Steam_exe5_hidden5',"5","False","True","True","False",'カジュアル(制限あり)改造なし'],
 ["Steam","exe5",'カジュアル(制限あり) 改造あり [アジア/オセアニア]','Steam_exe5_hidden6',"5","False","True","True","True",'カジュアル(制限あり)改造あり'],
 ["Steam","exe5",'特殊ルール [ヨーロッパ]','Steam_exe5_hidden7',"4",,,,,'特殊ルール'],
 ["Steam","exe5",'その他 [その他]','Steam_exe5_hidden8',"6",,,,,'その他'],
@@ -188,7 +164,7 @@ var rulearray = [
 ["PS4/PS5","exe5",'ランク(A↓) 改造あり [ワールドワイド]','PS4/PS5_exe5_hidden10',"1","True","True","True","True",'ランク(A↓)改造あり'],
 ["PS4/PS5","exe5",'カジュアル(制限なし) 改造なし [ワールドワイド]','PS4/PS5_exe5_hidden3',"1","False","True","True","False",'カジュアル(制限なし)改造なし'],
 ["PS4/PS5","exe5",'カジュアル(制限なし) 改造あり [ワールドワイド]','PS4/PS5_exe5_hidden4',"1","False","True","True","True",'カジュアル(制限なし)改造あり'],
-["PS4/PS5","exe5",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','PS4/PS5_exe5_hidden5',"5","False","True","True","False",'カジュアル(制限なし)改造なし'],
+["PS4/PS5","exe5",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','PS4/PS5_exe5_hidden5',"5","False","True","True","False",'カジュアル(制限あり)改造なし'],
 ["PS4/PS5","exe5",'カジュアル(制限あり) 改造あり [アジア/オセアニア]','PS4/PS5_exe5_hidden6',"5","False","True","True","True",'カジュアル(制限あり)改造あり'],
 ["PS4/PS5","exe5",'特殊ルール [ヨーロッパ]','PS4/PS5_exe5_hidden7',"4",,,,,'特殊ルール'],
 ["PS4/PS5","exe5",'その他 [その他]','PS4/PS5_exe5_hidden8',"6",,,,,'その他'],
@@ -199,7 +175,7 @@ var rulearray = [
 ["Switch","exe6",'ランク(A↓) 改造あり [ワールドワイド]','Switch_exe6_hidden10',"1","True","True","True","True",'ランク(A↓)改造あり'],
 ["Switch","exe6",'カジュアル(制限なし) 改造なし [ワールドワイド]','Switch_exe6_hidden3',"1","False","True","True","False",'カジュアル(制限なし)改造なし'],
 ["Switch","exe6",'カジュアル(制限なし) 改造あり [ワールドワイド]','Switch_exe6_hidden4',"1","False","True","True","True",'カジュアル(制限なし)改造あり'],
-["Switch","exe6",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Switch_exe6_hidden5',"5","False","True","True","False",'カジュアル(制限なし)改造なし'],
+["Switch","exe6",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Switch_exe6_hidden5',"5","False","True","True","False",'カジュアル(制限あり)改造なし'],
 ["Switch","exe6",'カジュアル(制限あり) 改造あり [アジア/オセアニア]','Switch_exe6_hidden6',"5","False","True","True","True",'カジュアル(制限あり)改造あり'],
 ["Switch","exe6",'特殊ルール [ヨーロッパ]','Switch_exe6_hidden7',"4",,,,,'特殊ルール'],
 ["Switch","exe6",'その他 [その他]','Switch_exe6_hidden8',"6",,,,,'その他'],
@@ -210,7 +186,7 @@ var rulearray = [
 ["Steam","exe6",'ランク(A↓) 改造あり [ワールドワイド]','Steam_exe6_hidden10',"1","True","True","True","True",'ランク(A↓)改造あり'],
 ["Steam","exe6",'カジュアル(制限なし) 改造なし [ワールドワイド]','Steam_exe6_hidden3',"1","False","True","True","False",'カジュアル(制限なし)改造なし'],
 ["Steam","exe6",'カジュアル(制限なし) 改造あり [ワールドワイド]','Steam_exe6_hidden4',"1","False","True","True","True",'カジュアル(制限なし)改造あり'],
-["Steam","exe6",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Steam_exe6_hidden5',"5","False","True","True","False",'カジュアル(制限なし)改造なし'],
+["Steam","exe6",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','Steam_exe6_hidden5',"5","False","True","True","False",'カジュアル(制限あり)改造なし'],
 ["Steam","exe6",'カジュアル(制限あり) 改造あり [アジア/オセアニア]','Steam_exe6_hidden6',"5","False","True","True","True",'カジュアル(制限あり)改造あり'],
 ["Steam","exe6",'特殊ルール [ヨーロッパ]','Steam_exe6_hidden7',"4",,,,,'特殊ルール'],
 ["Steam","exe6",'その他 [その他]','Steam_exe6_hidden8',"6",,,,,'その他'],
@@ -221,7 +197,7 @@ var rulearray = [
 ["PS4/PS5","exe6",'ランク(A↓) 改造あり [ワールドワイド]','PS4/PS5_exe6_hidden10',"1","True","True","True","True",'ランク(A↓)改造あり'],
 ["PS4/PS5","exe6",'カジュアル(制限なし) 改造なし [ワールドワイド]','PS4/PS5_exe6_hidden3',"1","False","True","True","False",'カジュアル(制限なし)改造なし'],
 ["PS4/PS5","exe6",'カジュアル(制限なし) 改造あり [ワールドワイド]','PS4/PS5_exe6_hidden4',"1","False","True","True","True",'カジュアル(制限なし)改造あり'],
-["PS4/PS5","exe6",'カジュアル(制限なし) 改造なし [アジア/オセアニア]','PS4/PS5_exe6_hidden5',"5","False","True","True","False",'カジュアル(制限なし)改造なし'],
+["PS4/PS5","exe6",'カジュアル(制限あり) 改造なし [アジア/オセアニア]','PS4/PS5_exe6_hidden5',"5","False","True","True","False",'カジュアル(制限あり)改造なし'],
 ["PS4/PS5","exe6",'カジュアル(制限あり) 改造あり [アジア/オセアニア]','PS4/PS5_exe6_hidden6',"5","False","True","True","True",'カジュアル(制限あり)改造あり'],
 ["PS4/PS5","exe6",'特殊ルール [ヨーロッパ]','PS4/PS5_exe6_hidden7',"4",,,,,'特殊ルール'],
 ["PS4/PS5","exe6",'その他 [その他]','PS4/PS5_exe6_hidden8',"6",,,,,'その他'],
@@ -674,470 +650,709 @@ var ruledetails=[
   ['Switch_exe6_hidden6',exe6_rule_deatil_ex],
 ]
 
-function ruledatile(hiddenData='Switch_exe1_hidden3'){
-  for (let i = 0; i < ruledetails.length; i++) {
-    if (ruledetails[i][0] === hiddenData) {
-       Logger.log(ruledetails[i]);
-      return ruledetails[i];
+
+// =====================================================================
+//  定数
+// =====================================================================
+const GAMETYPES = ['Switch', 'PS4/PS5', 'Steam'];
+const VERSIONS = ['exe1', 'exe2', 'exe3', 'exe4', 'exe5', 'exe6'];
+const DAYS_OF_WEEK = ['日', '月', '火', '水', '木', '金', '土'];
+
+const SHEET_MATCHING = 'matching';
+const SHEET_HIDDENTIME = 'hiddentime';
+const SHEET_EVENTID = 'eventid';
+const SHEET_EVENTDETAIL = 'eventdetail';
+const CONFIG_SHEET_NAME = '設定';
+
+const WAIT_EXPIRE_MS = 5 * 60 * 1000;                 // 待機の有効期限（5分）
+const LOCK_TIMEOUT_MS = 3000;                         // 書き込みロックの最大待ち時間（取れなければロックなしで続行）
+const CONFIG_SELECTOR_LABEL = '使用する設定';           // 「設定」シートで、使う設定シートの名前を書く行
+const CONFIG_HEADER_LABEL = '項目';                     // 設定シートの見出し行（読み飛ばす）
+const CONFIG_CACHE_KEY = 'config:v3';
+const CONFIG_CACHE_SECONDS = 60;                      // 設定値のキャッシュ（1分。シートの変更は最大1分で反映）
+const SNAPSHOT_CACHE_KEY = 'snapshot:v1';
+const SNAPSHOT_CACHE_SECONDS = 5;                     // 待機人数のキャッシュ（5秒。書き込み時は即破棄）
+const CALENDAR_CACHE_KEY = 'calendarEvents:v1';
+const CALENDAR_CACHE_SECONDS = 60;                    // カレンダー予定のキャッシュ（60秒。追加・変更・削除時は即破棄）
+const CALENDAR_RANGE_DAYS = 90;                       // 取得するカレンダー予定の範囲（今日から3か月）
+const ADD_EVENT_DEDUP_SECONDS = 600;                  // イベント追加の二重登録防止（10分）
+const EXPIRED_NOTIFY_WITHIN_MS = 3 * 60 * 60 * 1000;  // これより前に期限切れになった参加表明は通知せずに消す
+
+// 一時的なエラー（再試行すれば成功する可能性が高いもの）の判定用
+const TRANSIENT_ERROR_RE = /too many times|rate limit|timed out|timeout|temporar|try again|internal error|backend error|service unavailable|unavailable|多すぎ|タイムアウト|一時的|しばらくして|内部エラー|サーバー ?エラー/i;
+
+
+// =====================================================================
+//  設定（「設定」シート。形式はファイル先頭のコメントを参照）
+// =====================================================================
+
+// 戻り値 { profile: 使用中の設定名, values: { 項目名: 値 } }
+let configMemo_ = null;
+function getConfig_() {
+  if (configMemo_) return configMemo_;
+
+  const cached = safeCacheGet_(CONFIG_CACHE_KEY);
+  if (cached) {
+    try {
+      configMemo_ = JSON.parse(cached);
+      return configMemo_;
+    } catch (e) {
+      // キャッシュが壊れていたら読み直す
     }
   }
-  return [];
+
+  const config = readConfigSheet_();
+  safeCachePut_(CONFIG_CACHE_KEY, JSON.stringify(config), CONFIG_CACHE_SECONDS);
+  configMemo_ = config;
+  return config;
 }
 
-function doGet(e) {
-  Logger.log("r333");
+// 「設定」シートの B1（使用する設定）に書かれた名前のシートを読み込む
+function readConfigSheet_() {
+  const ss = getSettingsSpreadsheet_();
+  const selectorSheet = ss.getSheetByName(CONFIG_SHEET_NAME);
+  if (!selectorSheet) {
+    // 未導入でも待機の表は動くようにする（通知とカレンダーは使えない）
+    console.warn('「設定」シートがないため、Discord 通知とカレンダーは使えません');
+    return { profile: '', values: {} };
+  }
+  const selectorRows = readSheetValues_(selectorSheet);
 
-  let operation = "";
-  let arg1 = "";
-  let arg2 = "";
-  let arg3 = "";
-  let arg4 = "";
-  let arg5 = "";
-  let arg6 = "";
-  let arg7 = "";
-  let result;
+  let profile = '';
+  for (let i = 0; i < selectorRows.length; i++) {
+    if (String(selectorRows[i][0] || '').trim() === CONFIG_SELECTOR_LABEL) {
+      profile = String(selectorRows[i][1] || '').trim();
+      break;
+    }
+  }
+
+  let rows = selectorRows;  // 「使用する設定」がなければ「設定」シート自体に項目が書いてあるものとして読む
+  if (profile && profile !== CONFIG_SHEET_NAME) {
+    const setSheet = ss.getSheetByName(profile);
+    if (!setSheet) {
+      throw userError_('「' + profile + '」という名前のシートがありません。管理者は「設定」シートの「' + CONFIG_SELECTOR_LABEL + '」とシート名を合わせてください。');
+    }
+    rows = readSheetValues_(setSheet);
+  }
+
+  const values = {};
+  rows.forEach(function (r) {
+    const key = String(r[0] || '').trim();
+    if (!key || key === CONFIG_HEADER_LABEL || key === CONFIG_SELECTOR_LABEL) return;
+    values[key] = String(r[1] || '').trim();
+  });
+  return { profile: profile || CONFIG_SHEET_NAME, values: values };
+}
+
+// Webhook URL が読めなくても本来の処理（登録など）は失敗させず、通知だけスキップする
+function getWebhookUrl_(gametype, version) {
+  return readConfigValueSafely_('webhook_' + gametype + '_' + version);
+}
+
+function getEventWebhookUrl_() {
+  return readConfigValueSafely_('eventWebhookUrl');
+}
+
+function readConfigValueSafely_(key) {
+  try {
+    return getConfig_().values[key] || '';
+  } catch (e) {
+    console.error('設定値 ' + key + ' を読めませんでした: ' + e.message);
+    return '';
+  }
+}
+
+function getCalendarId_() {
+  const config = getConfig_();
+  const id = config.values.calendarId;
+  if (!id) {
+    throw userError_('「' + (config.profile || CONFIG_SHEET_NAME) + '」シートの calendarId が未入力です。管理者に連絡してください。');
+  }
+  return id;
+}
+
+// 待機データなどを置くスプレッドシート（dataSheetId が空欄なら「設定」シートと同じスプレッドシート）
+function getDataSpreadsheetId_() {
+  return getConfig_().values.dataSheetId || SETTINGS_SPREADSHEET_ID;
+}
+
+
+// =====================================================================
+//  共通処理（エラー処理・再試行・ロック・キャッシュ）
+// =====================================================================
+
+// 利用者にそのまま見せてよいエラー
+function userError_(message) {
+  const e = new Error(message);
+  e.userMessage = message;
+  return e;
+}
+
+function isTransientError_(e) {
+  return !!e && !e.userMessage && TRANSIENT_ERROR_RE.test(String((e && e.message) || e));
+}
+
+function friendlyMessage_(e, label) {
+  if (e && e.userMessage) return e.userMessage;
+  if (isTransientError_(e)) return 'Google のサービスが混み合っています。少し待ってからもう一度お試しください。';
+  return label + 'でエラーが発生しました: ' + ((e && e.message) || e);
+}
+
+// 画面から呼ばれる処理の共通ラッパー（ログを残し、利用者向けのメッセージにして投げ直す）
+function runForClient_(label, fn) {
+  try {
+    return fn();
+  } catch (e) {
+    console.error('[' + label + '] ' + ((e && e.stack) || e));
+    throw new Error(friendlyMessage_(e, label));
+  }
+}
+
+// 一時的なエラーのときだけ、待ち時間を伸ばしながら再試行する
+function withRetry_(fn, label, maxAttempts) {
+  const attempts = maxAttempts || 3;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return fn();
+    } catch (e) {
+      if (attempt >= attempts || !isTransientError_(e)) throw e;
+      const waitMs = 500 * Math.pow(2, attempt - 1) + Math.floor(Math.random() * 250);
+      console.warn('[再試行] ' + label + ' (' + attempt + '回目失敗: ' + e.message + ') ' + waitMs + 'ms 後に再試行します');
+      Utilities.sleep(waitMs);
+    }
+  }
+}
+
+// 複数人が同時に同じ所を書き換えないよう、取れればロックを使う（スクリプト全体で1つ。中の処理は短く保つこと）
+// ロックが取れなくても処理は止めない。同時に同じ所を書き換えることはまれで、影響も小さいため、
+// 利用者にエラーを見せるより続行する（取れなかったことは実行ログに残す）
+function withLock_(fn, timeoutMs, label) {
+  const lock = LockService.getScriptLock();
+  const startedAt = Date.now();
+  let locked = false;
+  try {
+    locked = lock.tryLock(timeoutMs || LOCK_TIMEOUT_MS);
+  } catch (e) {
+    console.warn('[ロック] 取得時にエラー: ' + e.message);
+  }
+  if (!locked) {
+    console.warn('[ロック取得できず] ' + (label || '') + ' ' + (Date.now() - startedAt) + 'ms 待ちましたが、ロックなしで続行します');
+  }
+  try {
+    return fn();
+  } finally {
+    if (locked) {
+      try {
+        SpreadsheetApp.flush();  // 書き込みを確定させてから次の人にロックを渡す
+      } catch (e) {
+        console.error('flush エラー: ' + e);
+      }
+      lock.releaseLock();
+    }
+  }
+}
+
+function safeCacheGet_(key) {
+  try {
+    return CacheService.getScriptCache().get(key);
+  } catch (e) {
+    console.warn('キャッシュ読み込みエラー(' + key + '): ' + e);
+    return null;
+  }
+}
+
+function safeCachePut_(key, value, seconds) {
+  try {
+    CacheService.getScriptCache().put(key, value, seconds);
+  } catch (e) {
+    // 100KB を超える値などはキャッシュしない（動作には影響なし）
+    console.warn('キャッシュ書き込みエラー(' + key + '): ' + e);
+  }
+}
+
+function safeCacheRemove_(key) {
+  try {
+    CacheService.getScriptCache().remove(key);
+  } catch (e) {
+    console.warn('キャッシュ削除エラー(' + key + '): ' + e);
+  }
+}
+
+
+// =====================================================================
+//  スプレッドシート・カレンダーへのアクセス
+// =====================================================================
+function openSpreadsheet_(id, label) {
+  try {
+    return withRetry_(function () { return SpreadsheetApp.openById(id); }, 'openSpreadsheet');
+  } catch (e) {
+    if (isTransientError_(e)) throw e;
+    console.error(label + 'を開けません(' + id + '): ' + e);
+    throw userError_(label + 'を開けません。管理者はスプレッドシートIDと共有設定を確認してください。');
+  }
+}
+
+let settingsSpreadsheetMemo_ = null;
+function getSettingsSpreadsheet_() {
+  if (!settingsSpreadsheetMemo_) settingsSpreadsheetMemo_ = openSpreadsheet_(SETTINGS_SPREADSHEET_ID, 'スプレッドシート');
+  return settingsSpreadsheetMemo_;
+}
+
+// 待機・イベントなどのデータを読み書きするスプレッドシート
+let spreadsheetMemo_ = null;
+function getSpreadsheet_() {
+  if (spreadsheetMemo_) return spreadsheetMemo_;
+  const id = getDataSpreadsheetId_();
+  spreadsheetMemo_ = (id === SETTINGS_SPREADSHEET_ID)
+    ? getSettingsSpreadsheet_()
+    : openSpreadsheet_(id, 'データ用スプレッドシート（「設定」シートの dataSheetId）');
+  return spreadsheetMemo_;
+}
+
+function getSheet_(name) {
+  const sheet = getSpreadsheet_().getSheetByName(name);
+  if (!sheet) {
+    throw userError_('シート「' + name + '」が見つかりません。管理者はスプレッドシートのシート名を確認してください。');
+  }
+  return sheet;
+}
+
+function readSheetValues_(sheet) {
+  return withRetry_(function () { return sheet.getDataRange().getValues(); }, 'read:' + sheet.getName());
+}
+
+let calendarMemo_ = null;
+function getCalendar_() {
+  if (calendarMemo_) return calendarMemo_;
+  const id = getCalendarId_();
+  const calendar = withRetry_(function () { return CalendarApp.getCalendarById(id); }, 'getCalendarById');
+  if (!calendar) {
+    throw userError_('カレンダーにアクセスできません。管理者は「設定」シートの calendarId とカレンダーの共有設定を確認してください。');
+  }
+  calendarMemo_ = calendar;
+  return calendar;
+}
+
+
+// =====================================================================
+//  Discord 通知
+// =====================================================================
+
+// 失敗しても例外は投げず、true/false を返す（通知失敗で本来の処理まで失敗させないため）
+function postDiscord_(url, content) {
+  if (!url) {
+    console.warn('Discord Webhook URL が未設定のため、通知をスキップしました');
+    return false;
+  }
+  if (!content) {
+    console.warn('通知内容が空のため、Discord 通知をスキップしました');
+    return false;
+  }
+  const options = {
+    method: 'post',
+    contentType: 'application/json',
+    payload: JSON.stringify({
+      content: String(content).slice(0, 2000),  // Discord の上限は2000文字
+      username: 'My Bot',
+      allowed_mentions: { parse: [] },          // イベント名などに @everyone 等が書かれても通知を飛ばさない
+    }),
+    muteHttpExceptions: true,
+  };
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    let response;
+    try {
+      response = UrlFetchApp.fetch(url, options);
+    } catch (e) {
+      console.error('Discord 通知の送信エラー(' + attempt + '回目): ' + e.message);
+      if (attempt === 2) return false;
+      Utilities.sleep(1000);
+      continue;
+    }
+    const code = response.getResponseCode();
+    if (code >= 200 && code < 300) return true;
+    if (code === 429 && attempt === 1) {
+      // 送信しすぎ → Discord が指定する時間だけ待って1回だけ再送
+      let waitMs = 1000;
+      try {
+        const body = JSON.parse(response.getContentText());
+        if (body.retry_after) waitMs = Math.min(5000, Math.ceil(Number(body.retry_after) * 1000));
+      } catch (e) {
+        // 本文が読めなければ1秒待つ
+      }
+      Utilities.sleep(waitMs);
+      continue;
+    }
+    console.error('Discord 通知の送信失敗: HTTP ' + code + ' ' + response.getContentText().slice(0, 300));
+    return false;
+  }
+  return false;
+}
+
+function notifyEventChannel_(content) {
+  try {
+    return postDiscord_(getEventWebhookUrl_(), content);
+  } catch (e) {
+    console.error('イベント通知の準備でエラー: ' + e);
+    return false;
+  }
+}
+
+function formatJpDateTime_(date, withTimeZone) {
+  const d = (date instanceof Date) ? date : new Date(date);
+  const pad = function (n) { return ('0' + n).slice(-2); };
+  let text = d.getFullYear() + '/' + pad(d.getMonth() + 1) + '/' + pad(d.getDate())
+    + '(' + DAYS_OF_WEEK[d.getDay()] + ') ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  if (withTimeZone) {
+    const m = d.toTimeString().match(/\(.*?\)/);
+    if (m) text += ' ' + m[0];
+  }
+  return text;
+}
+
+// イベント通知の本文。oldTimes を渡すと「変更前 → 変更後」の形式になる
+function buildEventMessage_(header, title, start, end, rule, description, oldTimes) {
+  const startText = (oldTimes ? formatJpDateTime_(oldTimes.start, false) + ' → ' : '') + formatJpDateTime_(start, true);
+  const endText = (oldTimes ? formatJpDateTime_(oldTimes.end, false) + ' → ' : '') + formatJpDateTime_(end, true);
+  return header + "\n\n"
+    + "タイトル : " + title + "\n"
+    + "開始時間 : " + startText + "\n"
+    + "終了時間 : " + endText + "\n\n"
+    + "環境 : " + rule[0] + "\n"
+    + "バージョン : " + rule[1] + "\n"
+    + "ルール : " + rule[9] + "\n"
+    + "詳細:\n" + (description || '');
+}
+
+
+// =====================================================================
+//  ルール情報
+// =====================================================================
+function findRuleByHidden_(hidden) {
+  for (let i = 0; i < rulearray.length; i++) {
+    if (rulearray[i][3] === hidden) return rulearray[i];
+  }
+  return null;
+}
+
+// ルール詳細（禁止事項）は ruledetails に登録したルールだけ表示する（未登録は「制限がありません」）
+function findRuleDetailsEntry_(hidden) {
+  for (let i = 0; i < ruledetails.length; i++) {
+    if (ruledetails[i][0] === hidden) return ruledetails[i];
+  }
+  return null;
+}
+
+function getRuleDetails_(hidden) {
+  const entry = findRuleDetailsEntry_(hidden);
+  return entry ? entry[1].slice() : null;
+}
+
+function ruledatile(hiddenData) {
+  return findRuleDetailsEntry_(hiddenData) || [];
+}
+
+function getRules(gametype, version) {
+  const rules = [];
+  for (let i = 0; i < rulearray.length; i++) {
+    if (rulearray[i][0] == gametype && rulearray[i][1] == version) {
+      rules.push({ hidden: rulearray[i][3], rule: rulearray[i][2] });
+    }
+  }
+  return rules;
+}
+
+function validateView_(gametype, version) {
+  if (GAMETYPES.indexOf(gametype) === -1 || VERSIONS.indexOf(version) === -1) {
+    throw userError_('環境またはバージョンの指定が正しくありません。');
+  }
+}
+
+
+// =====================================================================
+//  Web アプリの入口（画面表示 と Python 用 API）
+// =====================================================================
+function doGet(e) {
+  const p = (e && e.parameter) || {};
+  const operation = p.operation || '';
+
+  if (!operation) {
+    // 画面のファイル名は GAS 側が「test」でも「index」でも動くようにする
+    let page;
+    try {
+      page = HtmlService.createHtmlOutputFromFile('test');
+    } catch (err) {
+      page = HtmlService.createHtmlOutputFromFile('index');
+    }
+    return page
+      .setTitle('アドコレ対戦詳細')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
 
   try {
-    // リクエストのクエリパラメータを確認
-    if (e.parameter) {
-      operation = e.parameter.operation || ""; // 'operation' パラメータを取得
-      arg1 = e.parameter.arg1 || ""; // 'arg1' パラメータを取得
-      arg2 = e.parameter.arg2 || ""; // 'arg2' パラメータを取得
-      arg3 = e.parameter.arg3 || ""; // 'arg3' パラメータを取得
-      arg4 = e.parameter.arg4 || ""; // 'arg4' パラメータを取得
-      arg5 = e.parameter.arg5 || ""; // 'arg5' パラメータを取得
-      arg6 = e.parameter.arg6 || ""; // 'arg6' パラメータを取得
-      arg7 = e.parameter.arg7 || ""; // 'arg7' パラメータを取得
-      arg8 = e.parameter.arg8 || ""; // 'arg8' パラメータを取得
-      arg9 = e.parameter.arg9 || ""; // 'arg9' パラメータを取得
-    }
-  } catch (error) {
-    Logger.log(error);
-  }
-
-  Logger.log("Operation: " + operation);
-  Logger.log("Arg1: " + arg1);
-
-  if (operation) {
-    if (operation === "getuser") {
-      
-      Logger.log("Operation is getuser with Arg1: " + arg1);
-
-      result = userIdupdate(arg1);
-      Logger.log("Result: " + result+":::"+operation +"- user:"+ arg1 );
-
-      // 成功したレスポンスを返す
-      return ContentService.createTextOutput(JSON.stringify({
-        message: "Operation processed successfully",
-        result: result,
-        status: "success"
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-    else if (operation === "waitbattle"){
-      if (arg1 !== "" &&
-          arg2 !== "" &&
-          arg3 !== "" &&
-          arg4 !== "" &&
-          arg5 !== "" &&
-          arg6 !== "" &&
-          arg7 !== "" &&
-          arg8 !== "" &&
-          arg9 !== ""){
-        waitbattle(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);//
-
-        result = operation +"- user:"+ arg1 + "- Nset:"+ arg2 + "- isLank:"+ arg3 + "- isHost:"+ arg4+"- ispratice:"+ arg5+" - is Single:"+ arg6+" - ismod:"+ arg7+" - gametype:"+ arg8+" - version:"+ arg9;
-        Logger.log("Result: " + result);
-
-        // 成功したレスポンスを返す
-        return ContentService.createTextOutput(JSON.stringify({
-          message: "Operation processed successfully",
-          result: result,
-          status: "success"
-        })).setMimeType(ContentService.MimeType.JSON);
+    let result;
+    if (operation === 'getuser') {
+      result = userIdupdate(p.arg1 || '');
+    } else if (operation === 'waitbattle') {
+      const args = [p.arg1, p.arg2, p.arg3, p.arg4, p.arg5, p.arg6, p.arg7, p.arg8, p.arg9].map(function (v) { return v || ''; });
+      if (args.some(function (v) { return v === ''; })) {
+        return jsonResponse_({ message: 'Missing parameters (arg1-arg9 are required)', status: 'error' });
       }
-    }
-    else if (operation === "endbattle"){
-      if (arg1 !== ""){
-        endbattle(arg1)
-
-        result = operation +"- user:"+ arg1 
-
-        // 成功したレスポンスを返す
-        return ContentService.createTextOutput(JSON.stringify({
-          message: "Operation processed successfully",
-          result: result,
-          status: "success"
-        })).setMimeType(ContentService.MimeType.JSON);
-      }
-    }
-    else {
-      Logger.log("Invalid operation: " + operation);
-      return ContentService.createTextOutput(JSON.stringify({
-        message: "Invalid operation",
-        status: "error"
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-  }
-
-  Logger.log("Returning HTML page");
-  return HtmlService.createHtmlOutputFromFile('test')
-                      .setTitle('My HTML App')
-                      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-}
-
-function userFoundCheck(userId) {
-    var sheetName = 'matching';  // シート名
-
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  //var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = sheet.getDataRange().getValues();
-  var userFound = false;
-
-  // ユーザーIDを探す
-  for (var i = 0; i < data.length; i++) {
-    if (data[i][0] === userId) {
-      userFound = true;
-      rowIndexToUpdate = i + 1; // 行番号は1から始まるため、iに1を加算
-      break;
-    } else if (data[i][0] === "") {
-      rowIndexToUpdate = i + 1;
-      break;
-    }
-  }
-
-  return userFound,data.length,rowIndexToUpdate
-}
-
-function toggleButton(userId, gametype, version, ruleData, buttonType) {
-  var sheetName = 'matching';  // シート名
-
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  //var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = sheet.getDataRange().getValues();
-  var userFound = false;
-  var rowIndexToUpdate = -1;
-  var now = new Date(); 
-  //userFound,length,rowIndexToUpdate = userFoundCheck(userId)
-  // ユーザーIDを探す
-  for (var i = 0; i < data.length; i++) {
-
-
-    if (data[i][0] === userId) {
-      userFound = true;
-      rowIndexToUpdate = i + 1; // 行番号は1から始まるため、iに1を加算
-      break;
-    } else if (data[i][0] === "") {
-      rowIndexToUpdate = i + 1;
-      break;
-    }
-
-    
-  }
-
-  if (!userFound) {
-    if (rowIndexToUpdate === -1) {
-      rowIndexToUpdate = data.length + 1; // データがすべて埋まっている場合、次の行に追加
-    }
-  }
-
-  // データを更新または追加
-  if (userFound || rowIndexToUpdate > -1) {
-    sheet.getRange(rowIndexToUpdate, 1).setValue(userId); // ユーザーIDを設定
-
-    if (buttonType === 'button1') {
-      sheet.getRange(rowIndexToUpdate, 2).setValue(gametype); // 環境設定
-      sheet.getRange(rowIndexToUpdate, 3).setValue(version); // バージョン設定 
-
-      sheet.getRange(rowIndexToUpdate, 4).setValue(ruleData); // ルールデータを設定
-      sheet.getRange(rowIndexToUpdate, 5).setValue('button1'); // ボタンタイプを設定
-      sheet.getRange(rowIndexToUpdate, 6).setValue(now); // 現在の時間を設定
-    } else if (buttonType === 'button2') {
-      sheet.getRange(rowIndexToUpdate, 2).setValue(gametype); // 環境設定
-      sheet.getRange(rowIndexToUpdate, 3).setValue(version); // バージョン設定 
-      sheet.getRange(rowIndexToUpdate, 4).setValue(ruleData); // ルールデータを設定
-      sheet.getRange(rowIndexToUpdate, 5).setValue('button2'); // ボタンタイプを設定
-      sheet.getRange(rowIndexToUpdate, 6).setValue(now); // 現在の時間を設定
-    }
-    else {
-      sheet.getRange(rowIndexToUpdate, 2).setValue(gametype); // 環境設定
-      sheet.getRange(rowIndexToUpdate, 3).setValue(version); // バージョン設定 
-      sheet.getRange(rowIndexToUpdate, 4).setValue(""); // ルールデータを設定
-      sheet.getRange(rowIndexToUpdate, 5).setValue(""); // ボタンタイプを設定
-      sheet.getRange(rowIndexToUpdate, 6).setValue(now); // 現在の時間を設定
-    }
-  }
-  
-  // 5分前の登録をクリアする
-  /*for (var i = 1; i < data.length; i++) {
-    var registeredTime = new Date(data[i][5]); // シートの時間を取得
-    if ((now - registeredTime) > 5 * 60 * 1000) { // 5分以上経過しているかをチェック
-      if (data[i][0] !== userId) { // 現在のユーザー以外の行をクリア
-        sheet.getRange(i + 1, 2, 1, 4).clearContent(); // 2列目から5列目までクリア
-      }
-    }
-  }*/
-
-  return;
-}
-
-
-function userreset() {
-  var sheetName = 'matching';  // シート名
-
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  //var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = sheet.getDataRange().getValues();
-  var now = new Date(); 
-
-  // 5分前の登録をクリアする
-  for (var i = 0; i < data.length; i++) {
-    var registeredTimeStr = data[i][5]; // シートの時間を取得（文字列として取得される場合）
-    var registeredTime = new Date(registeredTimeStr);
-
-    // registeredTime が有効な Date オブジェクトか確認
-    if (!isNaN(registeredTime.getTime())) {
-      // 時間差をミリ秒で計算
-      var timeDiff = now - registeredTime;
-
-      // 5分（5 * 60 * 1000 ミリ秒）以上経過しているかチェック
-      if (timeDiff > 5 * 60 * 1000) {
-        // 2列目から5列目までクリア
-        sheet.getRange(i+1, 2, 1, 4).clearContent();
-      }
+      waitbattle.apply(null, args);
+      result = operation + "- user:" + args[0] + "- Nset:" + args[1] + "- isLank:" + args[2] + "- isHost:" + args[3]
+        + "- ispratice:" + args[4] + " - is Single:" + args[5] + " - ismod:" + args[6] + " - gametype:" + args[7] + " - version:" + args[8];
+    } else if (operation === 'endbattle') {
+      if (!p.arg1) return jsonResponse_({ message: 'Missing parameter: arg1', status: 'error' });
+      endbattle(p.arg1);
+      result = operation + "- user:" + p.arg1;
     } else {
-      Logger.log(`Invalid date at row ${i}: ${registeredTimeStr}`);
+      return jsonResponse_({ message: 'Invalid operation', status: 'error' });
+    }
+    return jsonResponse_({ message: 'Operation processed successfully', result: result, status: 'success' });
+  } catch (err) {
+    console.error('doGet(' + operation + '): ' + ((err && err.stack) || err));
+    return jsonResponse_({ message: friendlyMessage_(err, operation), status: 'error' });
+  }
+}
+
+function jsonResponse_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+
+// =====================================================================
+//  待機（matching シート）
+// =====================================================================
+function waitKey_(gametype, version, hidden, button) {
+  return [gametype, version, hidden, button].join('|');
+}
+
+// 待機の登録・解除（button1=親待機 / button2=子待機 / それ以外=解除）。ロックは使わない
+//   ・自分の行が既にある人: 自分の行だけ書き換える（行は消えたり並び替わったりしないので他の人とぶつからない）
+//   ・初めての人: appendRow で最終行の次に追加する（同時に追加されても行を取り合わない）
+//     同じ人の行が万一2行できても、人数は1人として数える（buildSnapshot_ / getTableData）
+function toggleButton(userId, gametype, version, ruleData, buttonType) {
+  if (!userId) throw userError_('ユーザーIDがありません。ページを再読み込みしてください。');
+  const isWait = (buttonType === 'button1' || buttonType === 'button2');
+  const values = [userId, gametype, version, isWait ? ruleData : '', isWait ? buttonType : '', new Date()];
+  const sheet = getSheet_(SHEET_MATCHING);
+
+  if (!writeOwnMatchingRow_(sheet, userId, values)) {
+    sheet.appendRow(values);  // 再試行すると二重追加になるので、ここは再試行しない
+  }
+  invalidateSnapshot_();
+}
+
+// 自分の行があれば書き換えて true、なければ false
+function writeOwnMatchingRow_(sheet, userId, values) {
+  const data = readSheetValues_(sheet);
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][0] === userId) {
+      const row = i + 1;
+      withRetry_(function () { sheet.getRange(row, 1, 1, 6).setValues([values]); }, 'matching.setValues');
+      return true;
     }
   }
+  return false;
+}
+
+// 画面用: 待機の登録・解除をして、そのまま最新の画面データを返す（1回の通信で完了）
+function toggleButtonAndGetPageData(userId, gametype, version, ruleData, buttonType, viewGametype, viewVersion) {
+  return runForClient_('待機状態の更新', function () {
+    validateView_(viewGametype, viewVersion);
+    if (buttonType === 'button1' || buttonType === 'button2') {
+      validateView_(gametype, version);
+      const rule = findRuleByHidden_(ruleData);
+      if (!rule || rule[0] !== gametype || rule[1] !== version) {
+        throw userError_('ルールが見つかりません。画面を更新してからもう一度お試しください。');
+      }
+    }
+    toggleButton(userId, gametype, version, ruleData, buttonType);
+    return buildPageData_(viewGametype, viewVersion, getSnapshot_(true), getEventInfo_());
+  });
+}
+
+// 【トリガー用】5分以上前の待機をクリアする
+// ロックは使わず、期限切れの行だけを書き換える（他の人の書き込みを待たせない）
+function userreset() {
+  const sheet = getSheet_(SHEET_MATCHING);
+  const data = readSheetValues_(sheet);
+  let cleared = 0;
+  for (let i = 0; i < data.length; i++) {
+    if (!isExpiredWaitRow_(data[i], Date.now())) continue;
+    const row = i + 1;
+    // 読んでから消すまでの間に本人が登録し直していないか、その行だけ読み直して確かめる
+    const current = sheet.getRange(row, 1, 1, 6).getValues()[0];
+    if (current[0] !== data[i][0] || !isExpiredWaitRow_(current, Date.now())) continue;
+    sheet.getRange(row, 2, 1, 4).setValues([['', '', '', '']]);
+    cleared++;
+  }
+  if (cleared > 0) invalidateSnapshot_();
+}
+
+// 待機中（B〜E列に値がある）で、登録から5分以上たっている行か
+function isExpiredWaitRow_(row, now) {
+  const registered = new Date(row[5]);
+  if (isNaN(registered.getTime())) return false;  // 見出し行など
+  const waiting = [row[1], row[2], row[3], row[4]].some(function (v) { return v !== '' && v !== null && v !== undefined; });
+  return waiting && now - registered.getTime() > WAIT_EXPIRE_MS;
 }
 
 function getTableData() {
-  var sheetName = 'matching';  // シート名
-
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  //const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = sheet.getDataRange().getValues();
-  let rowsData = [];
-  Logger.log(data.length +":::")
-  // スプレッドシートのデータを読み取り
+  const data = readSheetValues_(getSheet_(SHEET_MATCHING));
+  const rowsData = [];
+  const seen = {};
   for (let i = 0; i < data.length; i++) {
-    if (data[i][0]) {
-      rowsData.push({
-        //user: data[i][0],
-        gametype: data[i][1],
-        version: data[i][2],
-        hidden: data[i][3],
-        button: data[i][4],
-      });
-    }
+    if (!data[i][0] || seen[data[i][0]]) continue;  // 同じ人の2行目以降は数えない
+    seen[data[i][0]] = true;
+    rowsData.push({ gametype: data[i][1], version: data[i][2], hidden: data[i][3], button: data[i][4] });
   }
-  Logger.log(rowsData +":::")
   return rowsData;
 }
-function updateCell(userId, buttonType, hiddenData) {
-  var sheetName = 'matching';  // シート名
 
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  //const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = sheet.getDataRange().getValues();
-  
-  // hiddenData と buttonType の組み合わせで数をカウント
-  let count = 0;
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][5] === hiddenData) {
-      count++;
-    }
-  }
+// 待機人数・参加表明の状態をまとめて読む（matching と hiddentime を1回ずつ読むだけ）
+function buildSnapshot_() {
+  const matching = readSheetValues_(getSheet_(SHEET_MATCHING));
+  const hiddentime = readSheetValues_(getSheet_(SHEET_HIDDENTIME));
 
-  // buttonType に基づいて、適切なセルを更新
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][5] === hiddenData) {
-      if (buttonType === 'button1') {
-        sheet.getRange(i + 1, 3).setValue(count); // 親の数値を更新
-      } else if (buttonType === 'button2') {
-        sheet.getRange(i + 1, 5).setValue(count); // 子の数値を更新
+  const waitCounts = {};
+  const versionCounts = {};
+  const seen = {};
+  matching.forEach(function (r) {
+    if (!r[0] || seen[r[0]]) return;  // 同じ人の2行目以降は数えない
+    seen[r[0]] = true;
+    const vKey = r[1] + '|' + r[2];
+    versionCounts[vKey] = (versionCounts[vKey] || 0) + 1;
+    const wKey = waitKey_(r[1], r[2], r[3], r[4]);
+    waitCounts[wKey] = (waitCounts[wKey] || 0) + 1;
+  });
+
+  // hiddentime に載っているルールだけ画面に表示する。B列に時刻があれば「参加表明あり」
+  const hiddenTime = {};
+  hiddentime.forEach(function (r) {
+    const hidden = r[0];
+    if (hidden === '' || Object.prototype.hasOwnProperty.call(hiddenTime, hidden)) return;
+    hiddenTime[hidden] = (r[1] !== '' && r[1] !== undefined && r[1] !== null);
+  });
+
+  return { waitCounts: waitCounts, versionCounts: versionCounts, hiddenTime: hiddenTime };
+}
+
+// キャッシュはデータ用スプレッドシートごとに分ける（本番/テストを切り替えても混ざらないように）
+function snapshotCacheKey_() {
+  return SNAPSHOT_CACHE_KEY + ':' + getDataSpreadsheetId_();
+}
+
+function getSnapshot_(forceFresh) {
+  if (!forceFresh) {
+    const cached = safeCacheGet_(snapshotCacheKey_());
+    if (cached) {
+      try {
+        return JSON.parse(cached);
+      } catch (e) {
+        // 読み直す
       }
     }
+  }
+  const snapshot = buildSnapshot_();
+  safeCachePut_(snapshotCacheKey_(), JSON.stringify(snapshot), SNAPSHOT_CACHE_SECONDS);
+  return snapshot;
+}
+
+function invalidateSnapshot_() {
+  try {
+    safeCacheRemove_(snapshotCacheKey_());
+  } catch (e) {
+    console.warn('待機人数キャッシュの破棄に失敗: ' + e.message);
   }
 }
 
-
-function getRowData(gametype="Switch",version="exe1") {
-  // スプレッドシートのIDとシート名を指定
-  //var sheetId = '1-CE9s1VnutVZGPlBeVxOHEnnmTqN8x5Vxo_foSeFcjU';  // スプレッドシートのID
-  var sheetName = 'matching';  // シート名
-
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  var sheet2 = SpreadsheetApp.openById(sheetId).getSheetByName('hiddentime');
-
-
-  //const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = sheet.getDataRange().getValues();
-  const data2 = sheet2.getDataRange().getValues();
-  var tablerowdata=[];
-
-  rowsData = getTableData()
-
-  for (let i = 0; i < rowsData.length; i++) { 
-    for (let j = 0; j < accessnum.length; j++) {
-      accessnum[j][4]=0;
-
-    } 
-  }
-
-  for (let i = 0; i < rowsData.length; i++) { 
-    for (let j = 0; j < accessnum.length; j++) {
-      if((accessnum[j][0] == rowsData[i].gametype) && (accessnum[j][1] == rowsData[i].version) && (accessnum[j][2] == rowsData[i].hidden) && (accessnum[j][3] == rowsData[i].button)) {
-        accessnum[j][4]++;
-        break;
-      }
-    } 
-  }
-
+function buildPageData_(gametype, version, snapshot, eventInfo) {
+  const rows = [];
   for (let i = 0; i < rulearray.length; i++) {
-    /* 表示内容を取得 */
-    if ((rulearray[i][0] == gametype && rulearray[i][1] == version)) {
-      for (let k = 0; k < data2.length; k++) {
-          if ((rulearray[i][3] == data2[k][0])) {
-          Logger.log("data2:" + data2[k][1]+":")
-            if ((data2[k][1] !== "")&&(data2[k][1] !== undefined)) {
-              //Logger.log("TTTTTTT")
-              tablerowdata.push({
-                rule: rulearray[i][2],
-                button1: '親待機',
-                accessnum1: accessnum[2 * i][4],
-                button2: '子待機',
-                accessnum2: accessnum[2 * i + 1][4],
-                hidden: rulearray[i][3],
-                rulebutton: rulearray[i][9],
-
-                exbutton0: '',
-                exbutton1: '',
-                exbutton2: '参加表明あり',
-              });
-            }
-            else{
-              //Logger.log("TTTTTTT")
-              tablerowdata.push({
-                rule: rulearray[i][2],
-                button1: '親待機',
-                accessnum1: accessnum[2 * i][4],
-                button2: '子待機',
-                accessnum2: accessnum[2 * i + 1][4],
-                hidden: rulearray[i][3],
-                rulebutton: rulearray[i][9],
-
-                exbutton0: '',
-                exbutton1: '',
-                exbutton2: '参加表明なし',
-              });
-            }    
-            break
-          }
-      }
-    }
-
-
-
-
+    const r = rulearray[i];
+    if (r[0] != gametype || r[1] != version) continue;
+    const hidden = r[3];
+    if (!Object.prototype.hasOwnProperty.call(snapshot.hiddenTime, hidden)) continue;
+    rows.push({
+      rule: r[2],
+      button1: '親待機',
+      accessnum1: snapshot.waitCounts[waitKey_(gametype, version, hidden, 'button1')] || 0,
+      button2: '子待機',
+      accessnum2: snapshot.waitCounts[waitKey_(gametype, version, hidden, 'button2')] || 0,
+      hidden: hidden,
+      rulebutton: r[9],
+      exbutton2: snapshot.hiddenTime[hidden] ? '参加表明あり' : '参加表明なし',
+      eventCount: (eventInfo && eventInfo.counts) ? (eventInfo.counts[hidden] || 0) : null,
+      details: getRuleDetails_(hidden),
+    });
   }
 
-   //Logger.log("YYRRTTTTTT")
-  // データを返す（例: 1行目を返す）
-  Logger.log(tablerowdata)
-  return tablerowdata;
+  // 下の表（環境・バージョンごとの人数）。table1=Switch, table2=PS4/PS5, table3=Steam
+  const versionCounts = { table1: [], table2: [], table3: [] };
+  [['table1', 'Switch'], ['table2', 'PS4/PS5'], ['table3', 'Steam']].forEach(function (t) {
+    VERSIONS.forEach(function (v) {
+      versionCounts[t[0]].push([snapshot.versionCounts[t[1] + '|' + v] || 0]);
+    });
+  });
+
+  return {
+    gametype: gametype,
+    version: version,
+    rows: rows,
+    versionCounts: versionCounts,
+    eventError: (eventInfo && eventInfo.error) || '',
+    calendarId: (eventInfo && eventInfo.calendarId) || '',
+  };
+}
+
+// 画面用: 1画面分のデータ（ルール行・待機人数・バージョン別人数・イベント件数）を1回で返す
+function getPageData(gametype, version) {
+  return runForClient_('画面データの取得', function () {
+    validateView_(gametype, version);
+    return buildPageData_(gametype, version, getSnapshot_(false), getEventInfo_());
+  });
+}
+
+// カレンダーが読めなくても待機の表は表示できるよう、エラーはここで受け止める
+function getEventInfo_() {
+  try {
+    const counts = {};
+    getCalendarEventsCached_().forEach(function (ev) {
+      counts[ev.location] = (counts[ev.location] || 0) + 1;
+    });
+    return { counts: counts, calendarId: getCalendarId_() };
+  } catch (e) {
+    console.error('カレンダー情報の取得エラー: ' + ((e && e.stack) || e));
+    let calendarId = '';
+    try {
+      calendarId = getConfig_().values.calendarId || '';
+    } catch (ignore) {
+      // 設定も読めない場合は空のまま
+    }
+    return { counts: null, error: 'イベント情報を取得できませんでした: ' + friendlyMessage_(e, 'カレンダー'), calendarId: calendarId };
+  }
+}
+
+// 互換用（旧画面・外部から呼ばれていた場合のため）
+function getRowData(gametype, version) {
+  return buildPageData_(gametype || 'Switch', version || 'exe1', getSnapshot_(false), null).rows;
 }
 
 function getAllversionRowData() {
-  // スプレッドシートのIDとシート名を指定
-  //var sheetId = 'YOUR_SHEET_ID';  // スプレッドシートのID
-  //var sheetName = 'Sheet1';  // シート名
-
-  // スプレッドシートのオープン
-  //var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  var tableData = {
-    table1: [],
-    table2: [],
-    table3: []
-  };
-  var versionnumdata = [
-    ['Switch','exe1',0],
-    ['Switch','exe2',0],
-    ['Switch','exe3',0],
-    ['Switch','exe4',0],
-    ['Switch','exe5',0],
-    ['Switch','exe6',0],
-
-    ['PS4/PS5','exe1',0],
-    ['PS4/PS5','exe2',0],
-    ['PS4/PS5','exe3',0],
-    ['PS4/PS5','exe4',0],
-    ['PS4/PS5','exe5',0],
-    ['PS4/PS5','exe6',0],
-
-    ['Steam','exe1',0],
-    ['Steam','exe2',0],
-    ['Steam','exe3',0],
-    ['Steam','exe4',0],
-    ['Steam','exe5',0],
-    ['Steam','exe6',0],
-  ]
-  var sheetName = 'matching';  // シート名
-
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  //const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = sheet.getDataRange().getValues();
-  var tablerowdata=[];
-
-  rowsData = getTableData()
-
-
-  // accesscount
-  Logger.log(rowsData.length +":")
-  for (let i = 0; i < rowsData.length; i++) { 
-    Logger.log('R6RR')
-    for (let k = 0; k < versionnumdata.length; k++) {
-      Logger.log(versionnumdata[k][0] +':' + rowsData[i].gametype+':' + versionnumdata[k][1]+':' + rowsData[i].version+':' + versionnumdata[k][2])
-      if((versionnumdata[k][0] == rowsData[i].gametype) && (versionnumdata[k][1] == rowsData[i].version)){
-        versionnumdata[k][2]++;
-        Logger.log(versionnumdata[k][2])
-      }
-    }
-  }
-Logger.log(versionnumdata.length +":AA")
-  // テーブルデータの分配
-  for (let k = 0; k < versionnumdata.length; k++) {
-    const rowData = [versionnumdata[k][2]];
-    
-    if (k < 6) {
-      tableData.table1.push(rowData);
-    } else if (k < 12) {
-      tableData.table2.push(rowData);
-    } else {
-      tableData.table3.push(rowData);
-    }
-  }
-
-  return tableData;
+  return buildPageData_('Switch', 'exe1', getSnapshot_(false), null).versionCounts;
 }
 
-// pythonAPI
 
-//ユーザー発行
-// ユーザーIDを生成する関数
+// =====================================================================
+//  Python 用 API
+// =====================================================================
 function userIdupdate(userId) {
   let retuserId = "";
   if (userId === "") {
     retuserId = getUserId();
-    toggleButton(retuserId,"","","", "")
+    toggleButton(retuserId, "", "", "", "");
   } else {
-    toggleButton(userId, "","","", "")
+    toggleButton(userId, "", "", "", "");
     retuserId = userId;
   }
   return retuserId;
@@ -1146,1269 +1361,585 @@ function userIdupdate(userId) {
 function getUserId() {
   return 'user-' + Math.random().toString(36).substr(2, 9);
 }
+
 // 待機モード
-function waitbattle(userId,networksetting,matchingtype,isHost,ispractice,isSingle,ismod,gametype, version, ){
-  /*  var rulearray = [
-      //ルール名,隠しフラグ名,ネットワーク設定[1-5],カジュアル/ランク[],練習[]\本番, シングル[]/トリプル, 改造あり[]/改造なし
-      ['ランク 改造なし [ワールドワイド]','hidden1',1,"True","True","True","False"],
-      ['ランク 改造あり [ワールドワイド]','hidden2',1,"True","True","True","True"],
-      ['カジュアル(制限なし) 改造なし [ワールドワイド]','hidden3',1,"False","True","True","False"],
-      ['カジュアル(制限なし) 改造あり [ワールドワイド]','hidden4',1,"False","True","True","True"],
-      ['カジュアル(制限あり) 改造なし [アジア/オセアニア]','hidden5',5,"False","True","True","False"],
-      ['カジュアル(制限あり) 改造あり [アジア/オセアニア]','hidden6',5,"False","True","True","True"],
-      ['特殊ルール [ヨーロッパ]','hidden7',4],
-      ['その他 [その他]','hidden8',6],
-    ];  */
+// 指定された環境・バージョンのルールの中から選ぶ。各グループの最後の2つは「特殊ルール」「その他」
+//   ・それ以外のルール: ネットワーク設定・ランク・練習・シングル・改造がすべて一致したもの
+//   ・特殊ルール: ネットワーク設定が一致したもの
+//   ・その他: どれにも当てはまらないとき
+function waitbattle(userId, networksetting, matchingtype, isHost, ispractice, isSingle, ismod, gametype, version) {
+  const group = rulearray.filter(function (r) { return r[0] === gametype && r[1] === version; });
+  if (group.length === 0) throw userError_('環境またはバージョンの指定が正しくありません: ' + gametype + ' ' + version);
 
-  for (let i = 0; i < rulearray.length; i++) {
-    if (i < rulearray.length - 2){
-      if (rulearray[i][4] === networksetting && 
-        rulearray[i][5] === matchingtype && 
-        rulearray[i][6] === ispractice && 
-        rulearray[i][7] === isSingle && 
-        rulearray[i][8] === ismod){
-          if (isHost=== "True"){
-            toggleButton(userId, gametype, version, rulearray[i][3],'button1')
-            break
-          }
-          else{
-            toggleButton(userId, gametype, version, rulearray[i][3],'button2')
-            break
-          }
-        }
+  let rule = null;
+  for (let i = 0; i < group.length && !rule; i++) {
+    const r = group[i];
+    if (i < group.length - 2) {
+      if (r[4] === networksetting && r[5] === matchingtype && r[6] === ispractice && r[7] === isSingle && r[8] === ismod) rule = r;
+    } else if (i < group.length - 1) {
+      if (r[4] === networksetting) rule = r;
+    } else {
+      rule = r;
     }
-    else if (i < rulearray.length - 1){
-      if (rulearray[i][4] === networksetting){
-          if (isHost=== "True"){
-            toggleButton(userId, gametype, version, rulearray[i][3],'button1')
-            break
-          }
-          else{
-            toggleButton(userId, gametype, version, rulearray[i][3],'button2')
-            break
-          }
-        }
-    }
-    else{
-          if (isHost === "True"){
-            toggleButton(userId, gametype, version, rulearray[i][3],'button1')
-            break
-          }
-          else{
-            toggleButton(userId, gametype, version, rulearray[i][3],'button2')
-            break
-          }
-    }
-
   }
+  toggleButton(userId, gametype, version, rule[3], isHost === "True" ? 'button1' : 'button2');
 }
+
 // 待機モード終了
-function endbattle(userId){
-  toggleButton(userId,"","", "", "")
+function endbattle(userId) {
+  toggleButton(userId, "", "", "", "");
 }
 
+
+// =====================================================================
+//  待機人数の Discord 通知（トリガー用）
+// =====================================================================
 function sendNotificationToDiscord2() {
-
-  var versionnumdata = [
-    ['Switch', 'exe1', 0],
-    ['Switch', 'exe2', 0],
-    ['Switch', 'exe3', 0],
-    ['Switch', 'exe4', 0],
-    ['Switch', 'exe5', 0],
-    ['Switch', 'exe6', 0],
-
-    ['PS4/PS5', 'exe1', 0],
-    ['PS4/PS5', 'exe2', 0],
-    ['PS4/PS5', 'exe3', 0],
-    ['PS4/PS5', 'exe4', 0],
-    ['PS4/PS5', 'exe5', 0],
-    ['PS4/PS5', 'exe6', 0],
-
-    ['Steam', 'exe1', 0],
-    ['Steam', 'exe2', 0],
-    ['Steam', 'exe3', 0],
-    ['Steam', 'exe4', 0],
-    ['Steam', 'exe5', 0],
-    ['Steam', 'exe6', 0],
-  ]
-  var sheetName = 'matching';  // シート名
-
-
-  // スプレッドシートのオープン
-  rowsData = getTableData()
-  const properties = PropertiesService.getScriptProperties();
-
-  // プロパティからデータを取得
-  const olddata = properties.getProperty('oldversionnumdata');
-  let oldversionnumdata = JSON.parse(olddata);
-
-  if (oldversionnumdata === null) {
-    oldversionnumdata = [
-      ['Switch', 'exe1', 0],
-      ['Switch', 'exe2', 0],
-      ['Switch', 'exe3', 0],
-      ['Switch', 'exe4', 0],
-      ['Switch', 'exe5', 0],
-      ['Switch', 'exe6', 0],
-
-      ['PS4/PS5', 'exe1', 0],
-      ['PS4/PS5', 'exe2', 0],
-      ['PS4/PS5', 'exe3', 0],
-      ['PS4/PS5', 'exe4', 0],
-      ['PS4/PS5', 'exe5', 0],
-      ['PS4/PS5', 'exe6', 0],
-
-      ['Steam', 'exe1', 0],
-      ['Steam', 'exe2', 0],
-      ['Steam', 'exe3', 0],
-      ['Steam', 'exe4', 0],
-      ['Steam', 'exe5', 0],
-      ['Steam', 'exe6', 0],
-    ]
-  }
-
-  for (let l = 0; l < accessnum.length; l++) {
-    accessnum[l][4]=0;
-  }
-  for (let k = 0; k < versionnumdata.length; k++) {
-    versionnumdata[k][2]=0
-  }
-
-  //Logger.log(rowsData.length + ":")
-  for (let i = 0; i < rowsData.length; i++) {
-    var rstflg=0
-    Logger.log('R6RR')
-    for (let k = 0; k < versionnumdata.length; k++) {
-      Logger.log(versionnumdata[k][0] + ':' + rowsData[i].gametype + ':' + versionnumdata[k][1] + ':' + rowsData[i].version + ':' + versionnumdata[k][2])
-      if (("" == rowsData[i].gametype) && ("" == rowsData[i].version)) {
-        rstflg=1
-        break
-      }
-      else if ((versionnumdata[k][0] == rowsData[i].gametype) && (versionnumdata[k][1] == rowsData[i].version)) {
-        for (let l = 0; l < accessnum.length; l++) {
-          if ((accessnum[l][0] == rowsData[i].gametype) && (accessnum[l][1] == rowsData[i].version)&&(accessnum[l][2] == rowsData[i].hidden)&&(accessnum[l][3] == rowsData[i].button)) {
-            accessnum[l][4]++;
-            versionnumdata[k][2]++;
-            Logger.log(versionnumdata[k][2])
-            rstflg = 1
-            break
-          }
-        }
-      }
-      
-      if (rstflg == 1){
-        rstflg=0
-        break;
-      }
-    }
-  }
-  Logger.log(versionnumdata)
-  Logger.log(versionnumdata.length)
-  for (var i = 0; i < oldversionnumdata.length; i++) {
-    Logger.log("r")
-    if (versionnumdata[i][2] > oldversionnumdata[i][2]) {
-      messagecontent = versionnumdata[i][0] + " " + versionnumdata[i][1] + "に" + versionnumdata[i][2] + "人のプレイヤーがいます。\n";
-
-      for (let k = 0; k < rulearray.length; k++) {
-        /* 表示内容を取得 */
-        if ((rulearray[k][0] == versionnumdata[i][0] && rulearray[k][1] == versionnumdata[i][1])) {
-          if ((Number(accessnum[2 * k][4]) + Number(accessnum[2 * k + 1][4])) > 0) {
-            messagecontent += rulearray[k][9] + " : " + (Number(accessnum[2 * k][4]) + Number(accessnum[2 * k + 1][4])) + "\n";
-          }
-
-        }
-        }
-
-        let message = {
-          content: messagecontent,
-          username: 'My Bot'
-        };
-
-        let options = {
-          method: 'POST',
-          contentType: 'application/json',
-          payload: JSON.stringify(message)
-        };
-        Logger.log(message)
-        Logger.log(webhookUrl[i][2])
-        UrlFetchApp.fetch(webhookUrl[i][2], options);
-      }
-    }
-
-  properties.setProperty('oldversionnumdata', JSON.stringify(versionnumdata));
+  notifyWaitingPlayers_(false);
 }
+
 function sendNotificationToDiscord() {
-  //const webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL_HERE'; // ここにWebhook URLを貼り付けます
+  notifyWaitingPlayers_(true);
+}
 
+// countAllRows=true: バージョンごとの人数をルールに関係なく数える（旧 sendNotificationToDiscord の数え方）
+function notifyWaitingPlayers_(countAllRows) {
+  const rowsData = getTableData();
+  const validKeys = {};
+  accessnum.forEach(function (a) { validKeys[waitKey_(a[0], a[1], a[2], a[3])] = true; });
 
+  const waitCounts = {};
+  const versionCount = {};
+  rowsData.forEach(function (r) {
+    if (r.gametype === '' && r.version === '') return;
+    const key = waitKey_(r.gametype, r.version, r.hidden, r.button);
+    const vKey = r.gametype + '|' + r.version;
+    if (validKeys[key]) waitCounts[key] = (waitCounts[key] || 0) + 1;
+    if (countAllRows || validKeys[key]) versionCount[vKey] = (versionCount[vKey] || 0) + 1;
+  });
 
-  var versionnumdata = [
-    ['Switch', 'exe1', 0],
-    ['Switch', 'exe2', 0],
-    ['Switch', 'exe3', 0],
-    ['Switch', 'exe4', 0],
-    ['Switch', 'exe5', 0],
-    ['Switch', 'exe6', 0],
+  const versionnumdata = [];
+  GAMETYPES.forEach(function (g) {
+    VERSIONS.forEach(function (v) { versionnumdata.push([g, v, versionCount[g + '|' + v] || 0]); });
+  });
 
-    ['PS4/PS5', 'exe1', 0],
-    ['PS4/PS5', 'exe2', 0],
-    ['PS4/PS5', 'exe3', 0],
-    ['PS4/PS5', 'exe4', 0],
-    ['PS4/PS5', 'exe5', 0],
-    ['PS4/PS5', 'exe6', 0],
-
-    ['Steam', 'exe1', 0],
-    ['Steam', 'exe2', 0],
-    ['Steam', 'exe3', 0],
-    ['Steam', 'exe4', 0],
-    ['Steam', 'exe5', 0],
-    ['Steam', 'exe6', 0],
-  ]
-  var sheetName = 'matching';  // シート名
-
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  //const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = sheet.getDataRange().getValues();
-  var tablerowdata = [];
-
-  rowsData = getTableData()
-
+  // 前回の人数はデータ用スプレッドシートごとに覚える（本番/テストの切り替えで通知が誤爆しないように）
+  const dataId = getDataSpreadsheetId_();
+  const propertyKey = (dataId === SETTINGS_SPREADSHEET_ID) ? 'oldversionnumdata' : 'oldversionnumdata:' + dataId;
   const properties = PropertiesService.getScriptProperties();
-
-  // プロパティからデータを取得
-  const olddata = properties.getProperty('oldversionnumdata');
-  let oldversionnumdata = JSON.parse(olddata);
-
-  if (oldversionnumdata === null) {
-    oldversionnumdata = [
-      ['Switch', 'exe1', 0],
-      ['Switch', 'exe2', 0],
-      ['Switch', 'exe3', 0],
-      ['Switch', 'exe4', 0],
-      ['Switch', 'exe5', 0],
-      ['Switch', 'exe6', 0],
-
-      ['PS4/PS5', 'exe1', 0],
-      ['PS4/PS5', 'exe2', 0],
-      ['PS4/PS5', 'exe3', 0],
-      ['PS4/PS5', 'exe4', 0],
-      ['PS4/PS5', 'exe5', 0],
-      ['PS4/PS5', 'exe6', 0],
-
-      ['Steam', 'exe1', 0],
-      ['Steam', 'exe2', 0],
-      ['Steam', 'exe3', 0],
-      ['Steam', 'exe4', 0],
-      ['Steam', 'exe5', 0],
-      ['Steam', 'exe6', 0],
-    ]
+  let previous = null;
+  try {
+    previous = JSON.parse(properties.getProperty(propertyKey));
+  } catch (e) {
+    console.warn('前回の人数データが読めないため、0人として扱います: ' + e);
   }
-  // accesscount
-  Logger.log(rowsData.length + ":")
-  for (let i = 0; i < rowsData.length; i++) {
-    Logger.log('R6RR')
-    for (let k = 0; k < versionnumdata.length; k++) {
-      Logger.log(versionnumdata[k][0] + ':' + rowsData[i].gametype + ':' + versionnumdata[k][1] + ':' + rowsData[i].version + ':' + versionnumdata[k][2])
-      if ((versionnumdata[k][0] == rowsData[i].gametype) && (versionnumdata[k][1] == rowsData[i].version)) {
-        versionnumdata[k][2]++;
-        Logger.log(versionnumdata[k][2])
-      }
-    }
-  }
+  if (!Array.isArray(previous)) previous = versionnumdata.map(function (r) { return [r[0], r[1], 0]; });
+
+  versionnumdata.forEach(function (current, i) {
+    const before = previous[i] ? (Number(previous[i][2]) || 0) : 0;
+    if (current[2] <= before) return;
+
+    let messagecontent = current[0] + " " + current[1] + "に" + current[2] + "人のプレイヤーがいます。\n";
+    rulearray.forEach(function (r) {
+      if (r[0] != current[0] || r[1] != current[1]) return;
+      const n = (waitCounts[waitKey_(r[0], r[1], r[3], 'button1')] || 0) + (waitCounts[waitKey_(r[0], r[1], r[3], 'button2')] || 0);
+      if (n > 0) messagecontent += r[9] + " : " + n + "\n";
+    });
+    postDiscord_(getWebhookUrl_(current[0], current[1]), messagecontent);
+  });
+
+  properties.setProperty(propertyKey, JSON.stringify(versionnumdata));
+}
 
 
-  Logger.log(versionnumdata)
-  Logger.log(versionnumdata.length)
-  for (var i = 0; i < oldversionnumdata.length; i++) {
-    Logger.log("r")
-    if (versionnumdata[i][2] > oldversionnumdata[i][2]) {
-      messagecontent = versionnumdata[i][0] + " " + versionnumdata[i][1] + "に" + versionnumdata[i][2] + "人のプレイヤーがいます。\n";
+// =====================================================================
+//  カレンダー（イベント）
+// =====================================================================
+function fetchCalendarEvents_() {
+  const calendar = getCalendar_();
+  const today = new Date();
+  const endDate = new Date(today);
+  endDate.setDate(today.getDate() + CALENDAR_RANGE_DAYS);
+  const events = withRetry_(function () { return calendar.getEvents(today, endDate); }, 'calendar.getEvents');
 
-
-
-      for (let k = 0; k < rowsData.length; k++) {
-        for (let j = 0; j < accessnum.length; j++) {
-          if ((accessnum[j][0] == rowsData[k].gametype) && (accessnum[j][1] == rowsData[k].version) && (accessnum[j][2] == rowsData[k].hidden) && (accessnum[j][3] == rowsData[k].button)) {
-            accessnum[j][4]++;
-            break;
-          }
-        }
-      }
-
-      for (let k = 0; k < rulearray.length; k++) {
-        /* 表示内容を取得 */
-        if ((rulearray[k][0] == versionnumdata[i][0] && rulearray[k][1] == versionnumdata[i][1])) {
-          if ((Number(accessnum[2 * k][4]) + Number(accessnum[2 * k + 1][4])) > 0) {
-            messagecontent += rulearray[k][9] + " : " + (Number(accessnum[2 * k][4]) + Number(accessnum[2 * k + 1][4])) + "\n";
-          }
-
-        }
-        }
-
-        let message = {
-          content: messagecontent,
-          username: 'My Bot'
-        };
-
-        let options = {
-          method: 'POST',
-          contentType: 'application/json',
-          payload: JSON.stringify(message)
-        };
-        Logger.log(message)
-        Logger.log(webhookUrl[i][2])
-        UrlFetchApp.fetch(webhookUrl[i][2], options);
-      }
-    }
-    //oldversionnumdata = versionnumdata;
-    properties.setProperty('oldversionnumdata', JSON.stringify(versionnumdata));
-  }
-
-
-// Googleカレンダーのイベントを取得
-function getCalendarEvents() {
-  var version;
-  var platform;
-  var rule;
-  var ret;
-
-  var calendar = CalendarApp.getCalendarById(calendarId);
-
-  if (!calendar) {
-    return [];
-  }
-
-  var today = new Date();
-  var endDate = new Date(today);
-  endDate.setDate(today.getDate() + 90); // 4週間後の日付->3か月
-
-  var events = calendar.getEvents(today, endDate);
-
-  if (events.length === 0) {
-    return [];
-  }
-
-  var eventList = [];
-  //for (var i = 0; i < events.length; i++) {
-  events.forEach(function(event) {
-    var eventid = event.getId();
-    ret = event.getLocation().split("_");
-    if (ret.length>0){
-      platform = ret[0];
-      version = ret[1];
-      rule = ret[0]+"_" + ret[1]+"_" + ret[2]
-    }
-    else{
-      platform = "";
-      version = "";
-      rule = "";
-
-    
-    }
-    eventList.push({
+  return events.map(function (event) {
+    const location = event.getLocation() || '';
+    const parts = location.split('_');
+    const hasRule = parts.length >= 3;  // 「環境_バージョン_hiddenN」の形式
+    return {
       title: event.getTitle(),
-      startTime: event.getStartTime().toISOString(), // ISO 形式で返す
-      endTime: event.getEndTime().toISOString(),   // ISO 形式で返す
-      location: rule ,// null または undefined の場合は空文字
+      startTime: event.getStartTime().toISOString(),
+      endTime: event.getEndTime().toISOString(),
+      location: hasRule ? parts[0] + '_' + parts[1] + '_' + parts[2] : location,
       description: event.getDescription() || '',
-      platform: platform,
-      version: version,
-      eventid: eventid, 
+      platform: hasRule ? parts[0] : '',
+      version: hasRule ? parts[1] : '',
+      eventid: event.getId(),
+    };
+  });
+}
+
+// キャッシュはカレンダーごとに分ける（本番/テストを切り替えても混ざらないように）
+function calendarCacheKey_() {
+  return CALENDAR_CACHE_KEY + ':' + getCalendarId_();
+}
+
+function getCalendarEventsCached_() {
+  const cacheKey = calendarCacheKey_();
+  const cached = safeCacheGet_(cacheKey);
+  if (cached) {
+    try {
+      return JSON.parse(cached);
+    } catch (e) {
+      // 読み直す
+    }
+  }
+  const events = fetchCalendarEvents_();
+  safeCachePut_(cacheKey, JSON.stringify(events), CALENDAR_CACHE_SECONDS);
+  return events;
+}
+
+function invalidateCalendarCache_() {
+  try {
+    safeCacheRemove_(calendarCacheKey_());
+  } catch (e) {
+    console.warn('カレンダーキャッシュの破棄に失敗: ' + e.message);
+  }
+}
+
+// 互換用: 今日から3か月分のイベント一覧（カレンダーが読めない場合は空）
+function getCalendarEvents() {
+  try {
+    return getCalendarEventsCached_();
+  } catch (e) {
+    console.error('getCalendarEvents: ' + ((e && e.stack) || e));
+    return [];
+  }
+}
+
+// 画面用: 指定ルールのイベント一覧（参加予定人数つき）
+function getEventsForRule(hidden) {
+  return runForClient_('イベント情報の取得', function () {
+    const events = getCalendarEventsCached_().filter(function (ev) { return ev.location === hidden; });
+    const counts = getParticipantCounts_(events.map(function (ev) { return ev.eventid; }));
+    return events.map(function (ev) {
+      return Object.assign({}, ev, { participantCount: counts[ev.eventid] || 0 });
     });
   });
-Logger.log(eventList)
-  return eventList;
 }
 
-//SpredSheetにイベント情報を保存する
-function setEvent(userid="test",eventid="test2"){
-  var sheetName = 'eventid';  // シート名
+// 画面用: 自分が作成したイベント一覧
+function getMyEvents(userid) {
+  return runForClient_('自分のイベントの取得', function () {
+    if (!userid) return [];
+    const mine = {};
+    getmyeventsid(userid).forEach(function (x) { mine[x.eventid] = true; });
+    return getCalendarEventsCached_().filter(function (ev) { return mine[ev.eventid]; });
+  });
+}
 
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
+function parseDate_(value) {
+  if (value === '' || value === null || value === undefined) return null;
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? null : d;
+}
 
-  var data = sheet.getDataRange().getValues();
-  var eventFound = false;
-  var rowIndexToUpdate = -1;
- // var now = new Date(); 
-  //userFound,length,rowIndexToUpdate = userFoundCheck(userId)
-  // ユーザーIDを探す
-  for (var i = 0; i < data.length; i++) {
-
-
-    if (data[i][0] === eventid) {
-      eventFound = true;
-      rowIndexToUpdate = i + 1; // 行番号は1から始まるため、iに1を加算
-      break;
-    } else if (data[i][0] === "") {
-      rowIndexToUpdate = i + 1;
-      break;
-    }
-
-    
+function validateEventInput_(data) {
+  if (!data) throw userError_('イベント情報がありません。');
+  const title = String(data.title || '').trim();
+  if (!title) throw userError_('タイトルを入力してください。');
+  if (title.length > 200) throw userError_('タイトルは200文字以内にしてください。');
+  const start = parseDate_(data.startTime);
+  const end = parseDate_(data.endTime);
+  if (!start || !end) throw userError_('開始日時と終了日時を入力してください。');
+  if (end.getTime() <= start.getTime()) throw userError_('終了日時は開始日時より後にしてください。');
+  const rule = findRuleByHidden_(data.rule);
+  if (!rule) throw userError_('ルールを選択してください。');
+  if ((data.platform && data.platform !== rule[0]) || (data.version && data.version !== rule[1])) {
+    throw userError_('プラットフォーム・バージョンとルールが一致しません。ルールを選び直してください。');
   }
+  const description = String(data.description || '');
+  if (description.length > 5000) throw userError_('説明は5000文字以内にしてください。');
+  return { title: title, start: start, end: end, rule: rule, description: description };
+}
 
-  if (!eventFound) {
-    if (rowIndexToUpdate === -1) {
-      rowIndexToUpdate = data.length + 1; // データがすべて埋まっている場合、次の行に追加
-    }
+// eventid シートに「イベントID, 作成者のユーザーID」を記録する
+// appendRow は他の人の追加と重ならない（行の取り合いが起きない）ので、ロックは不要
+function setEventRow_(sheet, userid, eventid) {
+  const data = readSheetValues_(sheet);
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][0] === eventid) return;  // 登録済み
   }
+  sheet.appendRow([eventid, userid]);
+}
 
-  // データを追加
-  if (!eventFound) {
-    sheet.getRange(rowIndexToUpdate, 1).setValue(eventid); // イベントIDを設定
-    sheet.getRange(rowIndexToUpdate, 2).setValue(userid); // ユーザーIDを設定
-  }
+function setEvent(userid, eventid) {
+  setEventRow_(getSheet_(SHEET_EVENTID), userid, eventid);
+}
 
+function isEventOwner_(eventId, userid) {
+  if (!eventId || !userid) return false;
+  return readSheetValues_(getSheet_(SHEET_EVENTID)).some(function (r) {
+    return r[0] === eventId && r[1] === userid;
+  });
 }
 
 // カレンダーにイベントを追加
-function addCalendarEvent(eventData,userid) {
-  var daysOfWeek = ['日', '月', '火', '水', '木', '金', '土']; // 日本語の曜日配列
-  try{
-    var calendar = CalendarApp.getCalendarById(calendarId);
+function addCalendarEvent(eventData, userid) {
+  try {
+    if (!userid) throw userError_('ユーザーIDがありません。ページを再読み込みしてください。');
+    const input = validateEventInput_(eventData);
+    const requestKey = eventData.requestId ? 'addEvent:' + String(eventData.requestId).slice(0, 80) : '';
 
-    var title = eventData.title;
-    var startTime = new Date(eventData.startTime);
-    var endTime = new Date(eventData.endTime);
-    var description = eventData.description;
+    // カレンダーとシートを先に開く（ここで失敗しても「登録中」の印が残らないように）
+    // カレンダーへの登録は時間がかかるので、ロックは使わない（他の人の書き込みを待たせない）
+    const calendar = getCalendar_();
+    const sheet = getSheet_(SHEET_EVENTID);
 
-    // 場所の生成（プラットフォーム_バージョン_ルールの形式に変換）
-    var location = eventData.rule;
-
-    var event = calendar.createEvent(title, startTime, endTime, {
-      location: location,
-      description: description // 説明を設定
-    });
-
-    var eventid = event.getId();
-    setEvent(userid,eventid);
-
-  var messagecontent=""
-
-  for (var i = 0; i < rulearray.length; i++) {
-    //if (rulearray[i][0] == gametype && rulearray[i][1] == version){
-    if (rulearray[i][3] == location){
-      /*rules.push({
-        hidden: rulearray[i][3],
-        rule: rulearray[i][9],
-      });*/
-
-      var year = startTime.getFullYear();
-      var month = ('0' + (startTime.getMonth() + 1)).slice(-2);  // 月は0から始まるので+1し、2桁にする
-      var day = ('0' + startTime.getDate()).slice(-2);  // 日も2桁にする
-      var dayOfWeek = daysOfWeek[startTime.getDay()];  // 曜日を取得
-      var hours = ('0' + startTime.getHours()).slice(-2);  // 時間を2桁にする
-      var minutes = ('0' + startTime.getMinutes()).slice(-2);  // 分も2桁にする
-      var seconds = ('0' + startTime.getSeconds()).slice(-2);  // 秒も2桁にする
-      var timeZone = startTime.toTimeString().match(/\(.*?\)/)[0];  // タイムゾーンを取得
-
-      // フォーマットされた文字列を作成
-      var startformattedDate = year + '/' + month + '/' + day + '(' + dayOfWeek + ') ' + hours + ':' + minutes + ':' + seconds + ' ' + timeZone;
-
-      var year = endTime.getFullYear();
-      var month = ('0' + (endTime.getMonth() + 1)).slice(-2);  // 月は0から始まるので+1し、2桁にする
-      var day = ('0' + endTime.getDate()).slice(-2);  // 日も2桁にする
-      var dayOfWeek = daysOfWeek[endTime.getDay()];  // 曜日を取得
-      var hours = ('0' + endTime.getHours()).slice(-2);  // 時間を2桁にする
-      var minutes = ('0' + endTime.getMinutes()).slice(-2);  // 分も2桁にする
-      var seconds = ('0' + endTime.getSeconds()).slice(-2);  // 秒も2桁にする
-      var timeZone = endTime.toTimeString().match(/\(.*?\)/)[0];  // タイムゾーンを取得
-
-      // フォーマットされた文字列を作成
-      var endformattedDate = year + '/' + month + '/' + day + '(' + dayOfWeek + ') ' + hours + ':' + minutes + ':' + seconds + ' ' + timeZone;
-
-
-
-      messagecontent= "イベントが登録されました。\n\n"
-
-        + "タイトル : "+  title+"\n"
-        + "開始時間 : "+  startformattedDate+"\n" 
-        + "終了時間 : "+  endformattedDate+"\n\n" 
-        + "環境 : "+  rulearray[i][0]+"\n" 
-        + "バージョン : "+  rulearray[i][1]+"\n"
-        + "ルール : "+  rulearray[i][9]+"\n"
-        + "詳細:\n" + description;
-      break
+    // 同じ送信（タイムアウト後の押し直しなど）なら、2回目は登録しない
+    if (requestKey) {
+      const previous = safeCacheGet_(requestKey);
+      if (previous) {
+        const info = JSON.parse(previous);
+        if (info.pending) return { success: false, message: "同じイベントを登録中です。少し待ってから「イベント変更・削除」で確認してください。" };
+        return { success: true, message: "イベントが正常に追加されました。（同じ内容の送信を検出したため、二重登録はしていません）" };
+      }
+      safeCachePut_(requestKey, JSON.stringify({ pending: true }), ADD_EVENT_DEDUP_SECONDS);
     }
-  }
 
-    let message = {
-      content: messagecontent,
-      username: 'My Bot'
-    };
+    let eventid;
+    try {
+      const event = calendar.createEvent(input.title, input.start, input.end, {
+        location: input.rule[3],
+        description: input.description,
+      });
+      eventid = event.getId();
+      try {
+        setEventRow_(sheet, userid, eventid);
+      } catch (e) {
+        // シートに記録できないと作成者が編集・削除できなくなるため、カレンダー側も取り消す
+        try {
+          event.deleteEvent();
+        } catch (rollbackError) {
+          console.error('イベント追加の取り消しに失敗しました(' + eventid + '): ' + rollbackError);
+        }
+        throw e;
+      }
+    } catch (e) {
+      if (requestKey) safeCacheRemove_(requestKey);  // 失敗したら押し直せるようにする
+      throw e;
+    }
+    if (requestKey) safeCachePut_(requestKey, JSON.stringify({ eventid: eventid }), ADD_EVENT_DEDUP_SECONDS);
 
-    let options = {
-      method: 'POST',
-      contentType: 'application/json',
-      payload: JSON.stringify(message)
-    };
+    invalidateCalendarCache_();
 
-    UrlFetchApp.fetch(eventwebhookUrl, options);
-
-    // イベント追加後に、成功メッセージを返す
-    return { success: true, message: "イベントが正常に追加されました。" };
+    let message = "イベントが正常に追加されました。";
+    const content = buildEventMessage_('イベントが登録されました。', input.title, input.start, input.end, input.rule, input.description, null);
+    if (!notifyEventChannel_(content)) message += "\n（Discord への通知は送信できませんでした）";
+    return { success: true, message: message };
   } catch (error) {
-    // エラーが発生した場合はエラーメッセージを返す
-    return { success: false, message: "エラーが発生しました: " + error.message };
+    console.error('addCalendarEvent: ' + ((error && error.stack) || error));
+    return { success: false, message: friendlyMessage_(error, 'イベントの追加') };
   }
 }
 
-function getmyeventsid(userid){
-  var myeventsid = [];
-  var sheetName = 'eventid';  // シート名
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-
-  var data = sheet.getDataRange().getValues();
-  // ユーザーIDを探す
-  for (var i = 0; i < data.length; i++) {
-
-
+function getmyeventsid(userid) {
+  const myeventsid = [];
+  const data = readSheetValues_(getSheet_(SHEET_EVENTID));
+  for (let i = 0; i < data.length; i++) {
     if (data[i][1] === userid) {
-      myeventsid.push({
-        eventid: data[i][0],
-        //userid: data[i][1],
-      });
+      myeventsid.push({ eventid: data[i][0] });
     } else if (data[i][0] === "") {
       break;
     }
   }
-
   return myeventsid;
-
 }
 
-// カレンダーのイベントを変更
-function updateCalendarEvent(eventId, newEventData) {
-  var daysOfWeek = ['日', '月', '火', '水', '木', '金', '土']; // 日本語の曜日配列
+// カレンダーのイベントを変更（開始・終了日時）
+function updateCalendarEvent(eventId, newEventData, userid) {
   try {
-    var calendar = CalendarApp.getCalendarById(calendarId);
+    const start = parseDate_(newEventData && newEventData.startDateTime);
+    const end = parseDate_(newEventData && newEventData.endDateTime);
+    if (!start || !end) return { success: false, message: "無効な日時が指定されました。" };
+    if (end.getTime() <= start.getTime()) return { success: false, message: "終了日時は開始日時より後にしてください。" };
+    if (!isEventOwner_(eventId, userid)) return { success: false, message: "このイベントを変更できるのは作成者だけです。" };
 
-    // newEventData.startTimeとnewEventData.endTimeをDateオブジェクトに変換
-    var startDateTime = new Date(newEventData.startDateTime);
-    var endDateTime = new Date(newEventData.endDateTime);
-    
-    // startTimeとendTimeが正しいかを確認
-    if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
-      return { success: false, message: "無効な日時が指定されました。" };
+    const calendar = getCalendar_();
+    // 期間で探すと、重ならない時間に移動したときに見つからないため ID で直接取得する
+    const event = withRetry_(function () { return calendar.getEventById(eventId); }, 'calendar.getEventById');
+    if (!event) return { success: false, message: "イベントが見つかりません。" };
+
+    const oldTimes = { start: event.getStartTime(), end: event.getEndTime() };
+    withRetry_(function () { event.setTime(start, end); }, 'calendar.setTime');
+    invalidateCalendarCache_();
+
+    let message = "イベントが正常に更新されました。";
+    const rule = findRuleByHidden_(event.getLocation());
+    if (rule) {
+      const content = buildEventMessage_('イベントが更新されました。', event.getTitle(), start, end, rule, event.getDescription(), oldTimes);
+      if (!notifyEventChannel_(content)) message += "\n（Discord への通知は送信できませんでした）";
     }
-    
-    // 指定された期間でイベントを取得
-    var events = calendar.getEvents(startDateTime, endDateTime);
-    Logger.log(events);
-
-    var eventToUpdate = null;
-
-    Logger.log(eventId);
-    // 複数のイベントから特定のeventIdを持つものを探す
-    for (var i = 0; i < events.length; i++) {
-      if (events[i].getId() === eventId) {
-        Logger.log("eventId found");
-        eventToUpdate = events[i];
-        break;
-      }
-    }
-
-    if (!eventToUpdate) {
-      return { success: false, message: "イベントが見つかりません。" };
-    }
-
-    // イベントのプロパティを更新
-    //eventToUpdate.setTitle(newEventData.title);
-    //eventToUpdate.setDescription(newEventData.description);
-    
-    // locationが存在しない場合には空文字を設定
-    //eventToUpdate.setLocation(newEventData.location || "");
-    
-    var oldstartDateTime = eventToUpdate.getStartTime();
-    var oldendDateTime = eventToUpdate.getEndTime();
-
-    // イベントの開始時間と終了時間を更新
-    eventToUpdate.setTime(startDateTime, endDateTime);
-
-  var messagecontent=""
-
-  for (var i = 0; i < rulearray.length; i++) {
-    if (rulearray[i][3] == eventToUpdate.getLocation()){
-
-      var year = oldstartDateTime.getFullYear();
-      var month = ('0' + (oldstartDateTime.getMonth() + 1)).slice(-2);  // 月は0から始まるので+1し、2桁にする
-      var day = ('0' + oldstartDateTime.getDate()).slice(-2);  // 日も2桁にする
-      var dayOfWeek = daysOfWeek[oldstartDateTime.getDay()];  // 曜日を取得
-      var hours = ('0' + oldstartDateTime.getHours()).slice(-2);  // 時間を2桁にする
-      var minutes = ('0' + oldstartDateTime.getMinutes()).slice(-2);  // 分も2桁にする
-      var seconds = ('0' + oldstartDateTime.getSeconds()).slice(-2);  // 秒も2桁にする
-      var timeZone = oldstartDateTime.toTimeString().match(/\(.*?\)/)[0];  // タイムゾーンを取得
-
-      // フォーマットされた文字列を作成
-      var oldstartformattedDate = year + '/' + month + '/' + day + '(' + dayOfWeek + ') ' + hours + ':' + minutes + ':' + seconds;
-
-      var year = oldendDateTime.getFullYear();
-      var month = ('0' + (oldendDateTime.getMonth() + 1)).slice(-2);  // 月は0から始まるので+1し、2桁にする
-      var day = ('0' + oldendDateTime.getDate()).slice(-2);  // 日も2桁にする
-      var dayOfWeek = daysOfWeek[oldendDateTime.getDay()];  // 曜日を取得
-      var hours = ('0' + oldendDateTime.getHours()).slice(-2);  // 時間を2桁にする
-      var minutes = ('0' + oldendDateTime.getMinutes()).slice(-2);  // 分も2桁にする
-      var seconds = ('0' + oldendDateTime.getSeconds()).slice(-2);  // 秒も2桁にする
-      var timeZone = oldendDateTime.toTimeString().match(/\(.*?\)/)[0];  // タイムゾーンを取得
-
-      // フォーマットされた文字列を作成
-      var oldendformattedDate = year + '/' + month + '/' + day + '(' + dayOfWeek + ') ' + hours + ':' + minutes + ':' + seconds;
-
-
-      var startDateTime = eventToUpdate.getStartTime();
-      var year = startDateTime.getFullYear();
-      var month = ('0' + (startDateTime.getMonth() + 1)).slice(-2);  // 月は0から始まるので+1し、2桁にする
-      var day = ('0' + startDateTime.getDate()).slice(-2);  // 日も2桁にする
-      var dayOfWeek = daysOfWeek[startDateTime.getDay()];  // 曜日を取得
-      var hours = ('0' + startDateTime.getHours()).slice(-2);  // 時間を2桁にする
-      var minutes = ('0' + startDateTime.getMinutes()).slice(-2);  // 分も2桁にする
-      var seconds = ('0' + startDateTime.getSeconds()).slice(-2);  // 秒も2桁にする
-      var timeZone = startDateTime.toTimeString().match(/\(.*?\)/)[0];  // タイムゾーンを取得
-
-      // フォーマットされた文字列を作成
-      var startformattedDate = year + '/' + month + '/' + day + '(' + dayOfWeek + ') ' + hours + ':' + minutes + ':' + seconds + ' ' + timeZone;
-
-      var endDateTime = eventToUpdate.getEndTime();
-      var year = endDateTime.getFullYear();
-      var month = ('0' + (endDateTime.getMonth() + 1)).slice(-2);  // 月は0から始まるので+1し、2桁にする
-      var day = ('0' + endDateTime.getDate()).slice(-2);  // 日も2桁にする
-      var dayOfWeek = daysOfWeek[endDateTime.getDay()];  // 曜日を取得
-      var hours = ('0' + endDateTime.getHours()).slice(-2);  // 時間を2桁にする
-      var minutes = ('0' + endDateTime.getMinutes()).slice(-2);  // 分も2桁にする
-      var seconds = ('0' + endDateTime.getSeconds()).slice(-2);  // 秒も2桁にする
-      var timeZone = endDateTime.toTimeString().match(/\(.*?\)/)[0];  // タイムゾーンを取得
-
-      // フォーマットされた文字列を作成
-      var endformattedDate = year + '/' + month + '/' + day + '(' + dayOfWeek + ') ' + hours + ':' + minutes + ':' + seconds + ' ' + timeZone;
-
-
-
-      messagecontent= "イベントが更新されました。\n\n"
-
-        + "タイトル : "+  eventToUpdate.getTitle()+"\n"
-        + "開始時間 : "+  oldstartformattedDate + " → " + startformattedDate+"\n" 
-        + "終了時間 : "+  oldendformattedDate + " → " + endformattedDate+"\n\n" 
-        + "環境 : "+  rulearray[i][0]+"\n" 
-        + "バージョン : "+  rulearray[i][1]+"\n"
-        + "ルール : "+  rulearray[i][9]+"\n"
-        + "詳細:\n" + eventToUpdate.getDescription();
-      break
-    }
-  }
-
-    let message = {
-      content: messagecontent,
-      username: 'My Bot'
-    };
-
-    let options = {
-      method: 'POST',
-      contentType: 'application/json',
-      payload: JSON.stringify(message)
-    };
-
-    UrlFetchApp.fetch(eventwebhookUrl, options);
-
-
-
-    Logger.log("イベントが正常に更新されました。");
-    return { success: true, message: "イベントが正常に更新されました。" };
-
+    return { success: true, message: message };
   } catch (error) {
-    Logger.log("エラーが発生しました: " + error.message);
-    return { success: false, message: "エラーが発生しました: " + error.message };
+    console.error('updateCalendarEvent: ' + ((error && error.stack) || error));
+    return { success: false, message: friendlyMessage_(error, 'イベントの更新') };
   }
-}// カレンダーのイベントを削除
+}
 
-function deleteCalendarEvent(eventId, newEventData) {
-  Logger.log("start");
+// カレンダーのイベントを削除
+function deleteCalendarEvent(eventId, newEventData, userid) {
   try {
-    var calendar = CalendarApp.getCalendarById(calendarId);
-    Logger.log(newEventData);
-
-    // newEventData.startDateTimeをDateオブジェクトに変換
-    var startDateTime = new Date(newEventData.startDateTime);
-    Logger.log(newEventData.startDateTime);
-    startDateTime.setDate(startDateTime .getDate() - 1);
-     Logger.log(startDateTime);
-    // newEventData.endDateTimeをDateオブジェクトに変換し、元の endDateTime に1日を加える
-    var endDateTime = new Date(newEventData.endDateTime);
-    Logger.log(newEventData.endDateTime);
-    endDateTime.setDate(endDateTime.getDate() + 1);
-    Logger.log(endDateTime);
-    // 必要な期間でイベントを取得
-    var events = calendar.getEvents(startDateTime, endDateTime);
-Logger.log(events);
-    var eventToDelete = null;
-
-    Logger.log(eventId);
-    // 複数のイベントから特定のeventIdを持つものを探す
-    for (var i = 0; i < events.length; i++) {
-      if (events[i].getId() === eventId) {
-        Logger.log("eventid");
-        eventToDelete = events[i];
-        break;
-      }
-    }
-
-    if (!eventToDelete) {
-      return { success: false, message: "イベントが見つかりません。" };
-    }
-    Logger.log(eventToDelete);
-    // イベントを削除
-    eventToDelete.deleteEvent();
-
+    if (!isEventOwner_(eventId, userid)) return { success: false, message: "このイベントを削除できるのは作成者だけです。" };
+    const calendar = getCalendar_();
+    const event = withRetry_(function () { return calendar.getEventById(eventId); }, 'calendar.getEventById');
+    if (!event) return { success: false, message: "イベントが見つかりません。" };
+    event.deleteEvent();  // 二重削除を避けるため再試行はしない
+    invalidateCalendarCache_();
     return { success: true, message: "イベントが正常に削除されました。" };
   } catch (error) {
-    return { success: false, message: "エラーが発生しました: " + error.message };
+    console.error('deleteCalendarEvent: ' + ((error && error.stack) || error));
+    return { success: false, message: friendlyMessage_(error, 'イベントの削除') };
   }
 }
 
-function getRules(gametype="Switch", version="exe1"){
-    var rules = [];
-  for (var i = 0; i < rulearray.length; i++) {
-    if (rulearray[i][0] == gametype && rulearray[i][1] == version){
-      rules.push({
-        hidden: rulearray[i][3],
-        rule: rulearray[i][2],
-      });
-    }
-  }
-  Logger.log(rules)
-  return rules
+// イベントの参加予定を登録し、登録後の参加予定人数を返す
+function setparticipateEvent(eventid, userid) {
+  return runForClient_('参加予定の登録', function () {
+    if (!eventid || !userid) throw userError_('イベントまたはユーザーの情報がありません。画面を更新してください。');
+    const sheet = getSheet_(SHEET_EVENTDETAIL);  // シートはロックの外で開いておく
+    return withLock_(function () {
+      const data = readSheetValues_(sheet);
 
+      // 1行目の2列目以降からユーザーIDの列を探す（なければ空き列に追加）
+      let userCol = -1;
+      let userFound = false;
+      for (let i = 1; i < data[0].length; i++) {
+        if (data[0][i] === userid) {
+          userFound = true;
+          userCol = i + 1;
+          break;
+        } else if (data[0][i] === "") {
+          userCol = i + 1;
+          break;
+        }
+      }
+      if (userCol === -1) userCol = data[0].length + 1;
+      if (!userFound) sheet.getRange(1, userCol).setValue(userid);
+
+      // 2行目以降からイベントIDの行を探す（なければ空き行に追加）
+      let eventRow = -1;
+      let eventFound = false;
+      for (let i = 1; i < data.length; i++) {
+        if (data[i][0] === eventid) {
+          eventFound = true;
+          eventRow = i + 1;
+          break;
+        } else if (data[i][0] === "") {
+          eventRow = i + 1;
+          break;
+        }
+      }
+      if (eventRow === -1) eventRow = data.length + 1;
+      if (!eventFound) sheet.getRange(eventRow, 1).setValue(eventid);
+
+      sheet.getRange(eventRow, userCol).setValue("1");
+
+      // 登録後の参加予定人数（読み直さずに、読み込んだ内容から数える）
+      const rowValues = eventFound ? data[eventRow - 1] : [];
+      let count = 1;  // 自分
+      for (let j = 1; j < rowValues.length; j++) {
+        if (j !== userCol - 1 && rowValues[j] == 1) count++;
+      }
+      return count;
+    }, LOCK_TIMEOUT_MS, '参加予定の登録');
+  });
 }
 
-function setparticipateEvent(eventid = "teste", userid = "user-0hkjfx2bg") {
-
-  var sheetName = 'eventdetail';  // シート名
-
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-  var data = sheet.getDataRange().getValues();
-  
-  var userFound = false;
-  var eventFound = false;
-  var userrowIndexToUpdate = -1;
-  var eventrowIndexToUpdate = -1;
-  
-  // ユーザーIDを探す
-  for (var i = 1; i < data[0].length; i++) {  // 1行目の2列目以降で検索
-    if (data[0][i] === userid) {
-      userFound = true;
-      userrowIndexToUpdate = i + 1; // 行番号は1から始まるため、iに1を加算
-      break;
-    } else if (data[0][i] === "") {
-      userrowIndexToUpdate = i + 1;
-      break;
+// 複数イベントの参加予定人数をまとめて取得する（eventdetail シートを1回読むだけ）
+function getParticipantCounts_(eventIds) {
+  const result = {};
+  if (!eventIds || eventIds.length === 0) return result;
+  const wanted = {};
+  eventIds.forEach(function (id) { wanted[id] = true; });
+  const data = readSheetValues_(getSheet_(SHEET_EVENTDETAIL));
+  for (let i = 1; i < data.length; i++) {
+    const id = data[i][0];
+    if (!wanted[id] || Object.prototype.hasOwnProperty.call(result, id)) continue;
+    let count = 0;
+    for (let j = 1; j < data[0].length; j++) {
+      if (data[i][j] == 1) count++;
     }
+    result[id] = count;
   }
-
-  // ユーザーIDが見つからなかった場合、新しい列を追加
-  if (!userFound) {
-    if (userrowIndexToUpdate === -1) {
-      userrowIndexToUpdate = data[0].length + 1; // データがすべて埋まっている場合、次の列に追加
-    }
-    sheet.getRange(1, userrowIndexToUpdate).setValue(userid); // ユーザーIDを設定
-  }
-
-  // イベントIDを探す
-  for (var i = 1; i < data.length; i++) {  // 2行目以降で検索
-    if (data[i][0] === eventid) {
-      eventFound = true;
-      eventrowIndexToUpdate = i + 1; // 行番号は1から始まるため、iに1を加算
-      break;
-    } else if (data[i][0] === "") {
-      eventrowIndexToUpdate = i + 1;
-      break;
-    }
-  }
-
-  // イベントIDが見つからなかった場合、新しい行を追加
-  if (!eventFound) {
-    if (eventrowIndexToUpdate === -1) {
-      eventrowIndexToUpdate = data.length + 1; // データがすべて埋まっている場合、次の行に追加
-    }
-    sheet.getRange(eventrowIndexToUpdate, 1).setValue(eventid); // イベントIDを設定
-  }
-
-  // イベントIDとユーザーIDの交差点に値を設定
-  sheet.getRange(eventrowIndexToUpdate, userrowIndexToUpdate).setValue("1"); // イベントIDに対する参加人数
-
-  return;
+  return result;
 }
-function getparticipateEvent(eventid = "teste") {
-  var sheetName = 'eventdetail';  // シート名
-  
+
+function getparticipateEvent(eventid) {
   try {
-    // スプレッドシートのオープン
-    var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-    var data = sheet.getDataRange().getValues();
-    
-    var eventrowIndexToUpdate = -1;
-    var participateeventcount = 0;
-    
-    // イベントIDを探す
-    for (var i = 1; i < data.length; i++) {  // 2行目以降で検索
-      if (data[i][0] === eventid) {
-        eventrowIndexToUpdate = i; // 行番号は0から始まるため、iをそのまま使う
-        break;
-      }
-    }
-    
-    if (eventrowIndexToUpdate === -1) {
-      Logger.log('Event ID not found');
-      return 0;  // イベントIDが見つからない場合は0を返す
-    }
-    
-    Logger.log('Event Row Index: ' + eventrowIndexToUpdate);
-
-    // 参加予定人数をカウントする
-    for (var i = 1; i < data[0].length; i++) {  // 1行目の2列目以降で検索
-      Logger.log(data[eventrowIndexToUpdate][i])
-      if (data[eventrowIndexToUpdate][i] == 1) {
-        participateeventcount++;
-      }
-    }
-    
-    Logger.log('Participate Event Count: ' + participateeventcount);
-    return participateeventcount;
-
+    return getParticipantCounts_([eventid])[eventid] || 0;
   } catch (e) {
-    Logger.log('Error: ' + e.message);
+    console.error('getparticipateEvent: ' + e);
     return 0;
   }
 }
 
-function sendNotificationToDiscord_CalendarEvent(event,timeType){
-var daysOfWeek = ['日', '月', '火', '水', '木', '金', '土']; // 日本語の曜日配列
-    var title = event.getTitle()
-    var startTime = event.getStartTime()
-    var endTime = event.getEndTime()
-    var description = event.getDescription()
-    var location = event.getLocation()
-    
-  var messagecontent=""
 
-  for (var i = 0; i < rulearray.length; i++) {
-    if (rulearray[i][3] == location){
-
-      var year = startTime.getFullYear();
-      var month = ('0' + (startTime.getMonth() + 1)).slice(-2);  // 月は0から始まるので+1し、2桁にする
-      var day = ('0' + startTime.getDate()).slice(-2);  // 日も2桁にする
-      var dayOfWeek = daysOfWeek[startTime.getDay()];  // 曜日を取得
-      var hours = ('0' + startTime.getHours()).slice(-2);  // 時間を2桁にする
-      var minutes = ('0' + startTime.getMinutes()).slice(-2);  // 分も2桁にする
-      var seconds = ('0' + startTime.getSeconds()).slice(-2);  // 秒も2桁にする
-      var timeZone = startTime.toTimeString().match(/\(.*?\)/)[0];  // タイムゾーンを取得
-
-      // フォーマットされた文字列を作成
-      var startformattedDate = year + '/' + month + '/' + day + '(' + dayOfWeek + ') ' + hours + ':' + minutes + ':' + seconds + ' ' + timeZone;
-
-      var year = endTime.getFullYear();
-      var month = ('0' + (endTime.getMonth() + 1)).slice(-2);  // 月は0から始まるので+1し、2桁にする
-      var day = ('0' + endTime.getDate()).slice(-2);  // 日も2桁にする
-      var dayOfWeek = daysOfWeek[endTime.getDay()];  // 曜日を取得
-      var hours = ('0' + endTime.getHours()).slice(-2);  // 時間を2桁にする
-      var minutes = ('0' + endTime.getMinutes()).slice(-2);  // 分も2桁にする
-      var seconds = ('0' + endTime.getSeconds()).slice(-2);  // 秒も2桁にする
-      var timeZone = endTime.toTimeString().match(/\(.*?\)/)[0];  // タイムゾーンを取得
-
-      // フォーマットされた文字列を作成
-      var endformattedDate = year + '/' + month + '/' + day + '(' + dayOfWeek + ') ' + hours + ':' + minutes + ':' + seconds + ' ' + timeZone;
-      if (timeType == 1){
-        messagecontent= "以下イベントが24時間以内に予定されています。\n\n"
-        + "タイトル : "+  title+"\n"
-        + "開始時間 : "+  startformattedDate+"\n" 
-        + "終了時間 : "+  endformattedDate+"\n\n" 
-        + "環境 : "+  rulearray[i][0]+"\n" 
-        + "バージョン : "+  rulearray[i][1]+"\n"
-        + "ルール : "+  rulearray[i][9]+"\n"
-        + "詳細:\n" + description;
-      }
-      else if (timeType == 2){
-        messagecontent= "以下イベントが1時間以内に予定されています。\n\n"
-        + "タイトル : "+  title+"\n"
-        + "開始時間 : "+  startformattedDate+"\n" 
-        + "終了時間 : "+  endformattedDate+"\n\n" 
-        + "環境 : "+  rulearray[i][0]+"\n" 
-        + "バージョン : "+  rulearray[i][1]+"\n"
-        + "ルール : "+  rulearray[i][9]+"\n"
-        + "詳細:\n" + description;
-      }
-
-      break
-    }
-  }
-
-    let message = {
-      content: messagecontent,
-      username: 'My Bot'
-    };
-
-    let options = {
-      method: 'POST',
-      contentType: 'application/json',
-      payload: JSON.stringify(message)
-    };
-
-    UrlFetchApp.fetch(eventwebhookUrl, options);
-
-
-
+// =====================================================================
+//  イベントのリマインド通知（トリガー用）
+// =====================================================================
+function sendNotificationToDiscord_CalendarEvent(event, timeType) {
+  const rule = findRuleByHidden_(event.getLocation());
+  if (!rule) return false;
+  const header = (timeType == 1)
+    ? "以下イベントが24時間以内に予定されています。"
+    : "以下イベントが1時間以内に予定されています。";
+  const content = buildEventMessage_(header, event.getTitle(), event.getStartTime(), event.getEndTime(), rule, event.getDescription(), null);
+  return notifyEventChannel_(content);
 }
 
 function sendNotificationToDiscord_CalendarEventsWithin24Hours() {
-  var sheetName = 'eventid';  // シート名
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
-
-  var data = sheet.getDataRange().getValues();
-
- var calendar = CalendarApp.getCalendarById(calendarId);
-  
-  if (!calendar) {
-    return;
-  }
-
-  var now = new Date();              // 現在の日時
-  var next24Hours = new Date(now);   // 24時間後の日時
-  next24Hours.setHours(now.getHours() + 24); 
-
-  // 24時間以内のイベントを取得
-  var events = calendar.getEvents(now, next24Hours);
-  
-  // イベント情報を配列で返す
-  events.map(function(event) {
-    // ユーザーIDを探す
-    for (var i = 0; i < data.length; i++) {
-
-
-      if (data[i][0] === event.getId()) {
-        if(data[i][2] != "1"){
-          sendNotificationToDiscord_CalendarEvent(event,1);
-          sheet.getRange(i+1, 3).setValue("1");
-          return;
-        }
-      } else if (data[i][0] === "") {
-      return;
-      }
-    }
-  });
-
-  return;
-
+  notifyUpcomingEvents_(24, 2, 1);  // eventid シートの C 列に送信済みフラグ
 }
 
 function sendNotificationToDiscord_CalendarEventsWithin1Hours() {
-  var sheetName = 'eventid';  // シート名
-  // スプレッドシートのオープン
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
+  notifyUpcomingEvents_(1, 3, 2);   // eventid シートの D 列に送信済みフラグ
+}
 
-  var data = sheet.getDataRange().getValues();
+function notifyUpcomingEvents_(hours, flagColumnIndex, timeType) {
+  const sheet = getSheet_(SHEET_EVENTID);
+  const data = readSheetValues_(sheet);
+  const calendar = getCalendar_();
 
- var calendar = CalendarApp.getCalendarById(calendarId);
-  
-  if (!calendar) {
-    return;
+  const now = new Date();
+  const until = new Date(now);
+  until.setHours(now.getHours() + hours);
+  const events = withRetry_(function () { return calendar.getEvents(now, until); }, 'calendar.getEvents');
+
+  const rowById = {};
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][0] === "") break;
+    if (!Object.prototype.hasOwnProperty.call(rowById, data[i][0])) rowById[data[i][0]] = i;
   }
 
-  var now = new Date();              // 現在の日時
-  var next24Hours = new Date(now);   // 1時間後の日時
-  next24Hours.setHours(now.getHours() + 1); 
-
-  // 24時間以内のイベントを取得
-  var events = calendar.getEvents(now, next24Hours);
-  
-  // イベント情報を配列で返す
-  events.map(function(event) {
-    // ユーザーIDを探す
-    for (var i = 0; i < data.length; i++) {
-
-
-      if (data[i][0] === event.getId()) {
-        if(data[i][3] != "1"){
-          sendNotificationToDiscord_CalendarEvent(event,2);
-          sheet.getRange(i+1, 4).setValue("1");
-          return;
-        }
-      } else if (data[i][0] === "") {
-      return;
+  events.forEach(function (event) {
+    try {
+      const id = event.getId();
+      if (!Object.prototype.hasOwnProperty.call(rowById, id)) return;
+      const i = rowById[id];
+      if (data[i][flagColumnIndex] == "1") return;
+      // 送信できたときだけ「送信済み」にする（失敗したら次回のトリガーで再送）
+      if (sendNotificationToDiscord_CalendarEvent(event, timeType)) {
+        sheet.getRange(i + 1, flagColumnIndex + 1).setValue("1");
       }
+    } catch (e) {
+      console.error('リマインド通知エラー: ' + ((e && e.stack) || e));
     }
   });
-  return;
 }
 
-/*
+
+// =====================================================================
+//  参加表明（hiddentime シート）
+// =====================================================================
+
+// 画面用: 参加表明を登録して Discord に通知する
+// 戻り値 { success, code, message }  code: 1=新規登録 / 2=時刻を延長 / 0=更新なし（既存の方が遅い）
 function setParticipationClosed(hidden, dateTime) {
-  updflg=0
-  Logger.log("通知送信 - hidden: " + hidden + ", dateTime: " + dateTime);
+  return runForClient_('参加表明', function () {
+    const rule = findRuleByHidden_(hidden);
+    if (!rule) throw userError_('ルールが見つかりません。画面を更新してからもう一度お試しください。');
+    const newTime = parseDate_(dateTime);
+    if (!newTime) throw userError_('参加表明の日時が正しくありません。');
+    if (newTime.getTime() < Date.now() - 60 * 1000) throw userError_('参加表明の日時は現在より後にしてください。');
 
-  // 必要に応じて、日付文字列を Date オブジェクトに変換（日本時間として解釈）
-  const time = new Date(dateTime); // HTMLから渡されたのは 'datetime-local' 形式（ISO文字列）
-  Logger.log("通知送信 - hidden: " + hidden + ", dateTime: " + time);
-  // ここで通知処理（メール送信、カレンダー登録、Slack通知など）を実装
-  // 例：スプレッドシートに記録
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("hiddentime");
-  //sheet.appendRow([new Date(), hidden, time]);  // ログに記録（1列目は記録時刻）
-
-  var data = sheet.getDataRange().getValues();
-
-  // hiddenを探す
-  for (var i = 0; i < data.length; i++) {
-    if (data[i][0] === hidden) {
-        const newTime = new Date(dateTime);
-        const existingTime = new Date(data[i][1]);
-      if (data[i][1] !== "") {
-        Logger.log("hidden1: " + data[i][0]);
-
-        // 📌 新しい時間が既存の時間より遅い場合のみ更新
-        if (newTime > existingTime) {
+    const sheet = getSheet_(SHEET_HIDDENTIME);  // シートはロックの外で開いておく
+    const code = withLock_(function () {
+      const data = readSheetValues_(sheet);
+      for (let i = 0; i < data.length; i++) {
+        if (data[i][0] !== hidden) continue;
+        const existing = parseDate_(data[i][1]);
+        if (!existing) {
           sheet.getRange(i + 1, 2).setValue(dateTime);
-          Logger.log("時間を更新: " + dateTime);
-          updflg=2
-
-        } else {
-          Logger.log("時間更新せず（既存の方が遅いか同じ）");
-          return 0;
-        }
-      } else {
-        Logger.log("hidden2: " + data[i][0]);
-        sheet.getRange(i + 1, 2).setValue(dateTime);
-        updflg=1
-        
-      }
-    }
-
-  }
-
-  if(updflg>0){
-    var hiddenparts = hidden.split("_");
-
-    for (var i = 0; i < webhookUrl.length; i++) {
-      if(webhookUrl[i][0] == hiddenparts[0] && webhookUrl[i][1] == hiddenparts[1]){
-
-        messagecontent= "以下のルールで、[" + formatDateTime(dateTime)+"]までの対戦参加表明が行われました。\n\n"
-        + "環境 : "+  rulearray[i][0]+"\n" 
-        + "バージョン : "+  rulearray[i][1]+"\n"
-        + "ルール : "+  rulearray[i][9]+"\n"
-        let message = {
-          content: messagecontent,
-          username: 'My Bot'
-        };
-
-        let options = {
-          method: 'POST',
-          contentType: 'application/json',
-          payload: JSON.stringify(message)
-        };
-        Logger.log(message)
-        Logger.log(webhookUrl[i][2])
-        UrlFetchApp.fetch(webhookUrl[i][2], options);
-        return 1
-      }
-    }
-
-    return 0
-
-  }
-  else{
-    return 0;
-  }
-  // もしくは任意の通知処理を行う
-}
-*/
-
-function setParticipationClosed(hidden, dateTime) {
-  const lock = LockService.getScriptLock();
-  
-  try {
-    // hiddenを使ってロック名を生成
-    const lockKey = 'lock_' + hidden;
-    
-    // ロックを取得（最大10秒待機）
-    lock.waitLock(10000);
-    
-    Logger.log("通知送信 - hidden: " + hidden + ", dateTime: " + dateTime);
-
-    // 必要に応じて、日付文字列を Date オブジェクトに変換（日本時間として解釈）
-    const time = new Date(dateTime); // HTMLから渡されたのは 'datetime-local' 形式（ISO文字列）
-    Logger.log("通知送信 - hidden: " + hidden + ", dateTime: " + time);
-    
-    // シートへのアクセス
-    //var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("hiddentime");
-    var sheet = SpreadsheetApp.openById(sheetId).getSheetByName("hiddentime");
-    var data = sheet.getDataRange().getValues();
-
-    // hiddenを探す
-    let updflg = 0;
-    for (var i = 0; i < data.length; i++) {
-      /*if (data[i][0] === hidden) {
-        const newTime = new Date(dateTime);
-        const existingTime = new Date(data[i][1]);
-
-        if (data[i][1] !== "") {
-          Logger.log("hidden1: " + data[i][0]);
-
-          // 📌 新しい時間が既存の時間より遅い場合のみ更新
-          if (newTime > existingTime) {
-            sheet.getRange(i + 1, 2).setValue(dateTime);
-            Logger.log("時間を更新: " + dateTime);
-            updflg = 2;
-          } else {
-            Logger.log("時間更新せず（既存の方が遅いか同じ）");
-            return 0;
-          }
-        } else {
-          Logger.log("hidden2: " + data[i][0]);
-          sheet.getRange(i + 1, 2).setValue(dateTime);
-          updflg = 1;
-        }
-      }*/
-      if (data[i][0] === hidden) {
-        if (!data[i][1]) {
-          // 既存が空欄なら無条件で書き込み
-          sheet.getRange(i + 1, 2).setValue(dateTime);
-          updflg = 1;
-          break
-        } else {
-          const existingTime = new Date(data[i][1]);
-          const newTime = new Date(dateTime);
-
-          existingTime.setSeconds(0, 0);
-          newTime.setSeconds(0, 0);
-
-          if (newTime > existingTime) {
-            sheet.getRange(i + 1, 2).setValue(dateTime);
-            updflg = 2;
-          } else {
-            Logger.log("時間更新せず（既存の方が遅いか同じ）");
-            return 0;
-          }
-        }
-      }
-
-    }
-
-    // `hidden` が更新された場合のみ通知処理を実行
-    if (updflg > 0) {
-      var hiddenparts = hidden.split("_");
-
-      for (var i = 0; i < webhookUrl.length; i++) {
-        for (var j = 0; j < rulearray.length; j++) {
-          if (webhookUrl[i][0] == hiddenparts[0] && webhookUrl[i][1] == hiddenparts[1] && rulearray[j][0] == hiddenparts[0] && rulearray[j][1] == hiddenparts[1]&& rulearray[j][3] == hidden) {
-            const messagecontent = "以下のルールで、[" + formatDateTime(dateTime) + "]までの対戦参加表明が行われました。\n\n"
-                                  + "環境 : " + rulearray[j][0] + "\n"
-                                  + "バージョン : " + rulearray[j][1] + "\n"
-                                  + "ルール : " + rulearray[j][9] + "\n\n";
-                                  + "参加表明は、待機とは異なり、この時間で参加できる人がいるか、いたら参加したいという表明です。\n";
-                                  + "参加できる方はこちらのDiscord通知に〇などのスタンプで反応してください\n";
-                                  + "参加表明を取り消したい場合はこちらのDiscord通知に×などのスタンプで反応してください\n";
-
-            let message = {
-              content: messagecontent,
-              username: 'My Bot'
-            };
-
-            let options = {
-              method: 'POST',
-              contentType: 'application/json',
-              payload: JSON.stringify(message)
-            };
-            Logger.log(message);
-            Logger.log(webhookUrl[i][2]);
-            UrlFetchApp.fetch(webhookUrl[i][2], options);
-            return 1;
-          }
-        }
-      }
-
-      return 0;
-    } else {
-      return 0;
-    }
-  } catch (e) {
-          const messagecontent = "ロック取得エラー\n";
-
-          let message = {
-            content: messagecontent,
-            username: 'My Bot'
-          };
-
-          let options = {
-            method: 'POST',
-            contentType: 'application/json',
-            payload: JSON.stringify(message)
-          };
-          Logger.log(message);
-          Logger.log(webhookUrl[i][2]);
-          UrlFetchApp.fetch(webhookUrl[i][2], options);
           return 1;
-    return 0;
-  } finally {
-    lock.releaseLock(); // ロック解放
-  }
-}
-
-function deleteOldTime() {
-  const currentTime = new Date();
-  Logger.log(currentTime)
-  //const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("hiddentime");
-  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName("hiddentime");
-  const data = sheet.getDataRange().getValues();
-  // 新しい時間が現在の時間より前の場合、時間を削除
-  for (let k = 0; k < data.length; k++) {
-    if ((data[k][1] !== "") && (data[k][1] < currentTime)) {
-      var hiddenparts = data[k][0].split("_");
-      for (var i = 0; i < webhookUrl.length; i++) {
-        for (var j = 0; j < rulearray.length; j++) {
-          
-          if (webhookUrl[i][0] == hiddenparts[0] && webhookUrl[i][1] == hiddenparts[1] && rulearray[j][0] == hiddenparts[0] && rulearray[j][1] == hiddenparts[1]&& rulearray[j][3] == data[k][0]) {
-            sheet.getRange(k + 1, 2).setValue(""); // 時間を削除
-            const messagecontent = "以下のルールの対戦参加表明がタイムアウト・終了しました。\n\n"
-                                  + "環境 : " + rulearray[j][0] + "\n"
-                                  + "バージョン : " + rulearray[j][1] + "\n"
-                                  + "ルール : " + rulearray[j][9] + "\n";
-
-            let message = {
-              content: messagecontent,
-              username: 'My Bot'
-            };
-
-            let options = {
-              method: 'POST',
-              contentType: 'application/json',
-              payload: JSON.stringify(message)
-            };
-            Logger.log(message);
-            Logger.log(webhookUrl[i][2]);
-            UrlFetchApp.fetch(webhookUrl[i][2], options);
-            return 1;
-          }
-
         }
+        existing.setSeconds(0, 0);
+        const compareTime = new Date(newTime.getTime());
+        compareTime.setSeconds(0, 0);
+        if (compareTime > existing) {
+          sheet.getRange(i + 1, 2).setValue(dateTime);
+          return 2;
+        }
+        return 0;
       }
-    }
-  }
+      return -1;
+    }, LOCK_TIMEOUT_MS, '参加表明');
 
-  return false; // 削除しなかった場合は false を返す
+    if (code === -1) throw userError_('このルールは参加表明の対象外です（hiddentime シートに登録がありません）。');
+    if (code === 0) {
+      return { success: true, code: 0, message: '既に同じか、より遅い時刻までの参加表明があるため更新しませんでした。' };
+    }
+    invalidateSnapshot_();
+
+    const messagecontent = "以下のルールで、[" + formatDateTime(dateTime) + "]までの対戦参加表明が行われました。\n\n"
+      + "環境 : " + rule[0] + "\n"
+      + "バージョン : " + rule[1] + "\n"
+      + "ルール : " + rule[9] + "\n\n"
+      + "参加表明は、待機とは異なり、この時間で参加できる人がいるか、いたら参加したいという表明です。\n"
+      + "参加できる方はこちらのDiscord通知に〇などのスタンプで反応してください\n"
+      + "参加表明を取り消したい場合はこちらのDiscord通知に×などのスタンプで反応してください\n";
+    const notified = postDiscord_(getWebhookUrl_(rule[0], rule[1]), messagecontent);
+
+    let message = (code === 1) ? '参加表明を登録しました' : '参加表明の時刻を延長しました';
+    message += notified ? '（Discord に通知しました）' : '（Discord への通知は送信できませんでした）';
+    return { success: true, code: code, message: message, notified: notified };
+  });
 }
 
+// 【トリガー用】期限切れの参加表明を消して Discord に通知する
+function deleteOldTime() {
+  const now = Date.now();
+  const sheet = getSheet_(SHEET_HIDDENTIME);
+  const hasExpired = readSheetValues_(sheet).some(function (r) {
+    const time = parseDate_(r[1]);
+    return time && time.getTime() < now;
+  });
+  if (!hasExpired) return false;  // 期限切れがなければロックを取らずに終わる（毎分のトリガーで他の人を待たせない）
+
+  const expired = withLock_(function () {
+    const data = readSheetValues_(sheet);
+    const list = [];
+    for (let k = 0; k < data.length; k++) {
+      const time = parseDate_(data[k][1]);
+      if (!time || time.getTime() >= now) continue;
+      const rule = findRuleByHidden_(data[k][0]);
+      if (!rule) continue;
+      sheet.getRange(k + 1, 2).setValue("");
+      list.push({ rule: rule, notify: now - time.getTime() <= EXPIRED_NOTIFY_WITHIN_MS });
+    }
+    return list;
+  }, LOCK_TIMEOUT_MS, '期限切れの参加表明の削除');
+
+  if (expired.length === 0) return false;
+  invalidateSnapshot_();
+  expired.forEach(function (item) {
+    if (!item.notify) return;  // ずっと前に切れていたもの（トリガー停止中など）は通知しない
+    const rule = item.rule;
+    const messagecontent = "以下のルールの対戦参加表明がタイムアウト・終了しました。\n\n"
+      + "環境 : " + rule[0] + "\n"
+      + "バージョン : " + rule[1] + "\n"
+      + "ルール : " + rule[9] + "\n";
+    postDiscord_(getWebhookUrl_(rule[0], rule[1]), messagecontent);
+  });
+  return 1;
+}
 
 function formatDateTime(dateTimeString) {
-  const date = new Date(dateTimeString); // '2025-05-03T18:30' などをパース
+  const date = new Date(dateTimeString);  // '2025-05-03T18:30' などをパース
   const year = date.getFullYear();
   const month = ('0' + (date.getMonth() + 1)).slice(-2);
   const day = ('0' + date.getDate()).slice(-2);
   const hours = ('0' + date.getHours()).slice(-2);
   const minutes = ('0' + date.getMinutes()).slice(-2);
-
-  const formatted = `${year}/${month}/${day} ${hours}:${minutes}`;
-  Logger.log(formatted);  // 例: "2025/05/03 18:30"
-  return formatted;
+  return `${year}/${month}/${day} ${hours}:${minutes}`;
 }
-
